@@ -7,11 +7,15 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener {
+import com.example.kbourgeois.opengl.FloatK.Float3;
+
+class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener, GestureDetector.OnDoubleTapListener {
     private final MyGLRenderer myRenderer;
     private final float TOUCH_SCALE_FACTOR = 0.01f;
 
     private float mScale = 1;
+    private DetectorMove mDetectorMoveDoubleTap = new DetectorMove();
+
 
     private GestureDetectorCompat mGestureDetectorCompat;
     private ScaleGestureDetector mScaleGestureDetector;
@@ -44,45 +48,49 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
         //setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 
         mGestureDetectorCompat = new GestureDetectorCompat(mainActivity, this);
+        mGestureDetectorCompat.setOnDoubleTapListener(this);
+        mGestureDetectorCompat.setIsLongpressEnabled(false);
         mScaleGestureDetector = new ScaleGestureDetector(mainActivity, this);
+        mScaleGestureDetector.setQuickScaleEnabled(false);
     }
 
     @Override
     public boolean onDown(MotionEvent e) {
-        Log.d("Event :", Thread.currentThread().getStackTrace()[2].getMethodName());
+        Log.d("Event", Thread.currentThread().getStackTrace()[2].getMethodName());
+        Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), e.getX() + " " + e.getY());
         return false;
     }
 
     @Override
     public void onShowPress(MotionEvent e) {
-        Log.d("Event :", Thread.currentThread().getStackTrace()[2].getMethodName());
+        Log.d("Event", Thread.currentThread().getStackTrace()[2].getMethodName());
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        Log.d("Event :", Thread.currentThread().getStackTrace()[2].getMethodName());
+        Log.d("Event", Thread.currentThread().getStackTrace()[2].getMethodName());
         return false;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.d("Event :", Thread.currentThread().getStackTrace()[2].getMethodName());
+        Log.d("Event", Thread.currentThread().getStackTrace()[2].getMethodName());
         Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), "dX : " + distanceX + " dY " + distanceY);
 
         if (distanceX != 0 || distanceY != 0) {
             if (Math.abs(distanceX) >= Math.abs(distanceY)) {
                 distanceY = 0;
+                distanceX *= -1;
             } else {
                 distanceX = 0;
+                distanceY *= -1;
             }
             Transform transform = myRenderer.getmModel().getTransform();
             switch (e2.getPointerCount()) {
                 case 1:
-                    transform.setRotate(transform.getRotateX()+Math.signum(-distanceY), transform.getRotateY()+Math.signum(-distanceX) , transform.getRotateZ());
-                    Log.d("Rotation", transform.getRotateX() + " " + transform.getRotateY() + " " + transform.getRotateZ());
-                    return true;
-                case 2:
-                    transform.setTranslate(transform.getTranslateX() + distanceX * TOUCH_SCALE_FACTOR, transform.getTranslateY() + distanceY * TOUCH_SCALE_FACTOR, transform.getTranslateZ());
+                    Float3 rotate = transform.getRotate();
+                    rotate.set(rotate.getX() + Math.signum(distanceY), rotate.getY() + Math.signum(distanceX), rotate.getZ());
+                    Log.d("Rotation", rotate.getX() + " " + rotate.getY() + " " + rotate.getZ());
                     return true;
             }
 
@@ -92,28 +100,24 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
 
     @Override
     public void onLongPress(MotionEvent e) {
-        Log.d("Event :", Thread.currentThread().getStackTrace()[2].getMethodName());
-        myRenderer.getmModel().getTransform().setTranslate(0, 0, 0);
-        myRenderer.getmModel().getTransform().setRotate(0, 0, 0);
-        myRenderer.getmModel().getTransform().setScale(1, 1, 1);
+        Log.d("Event", Thread.currentThread().getStackTrace()[2].getMethodName());
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        Log.d("Event :", Thread.currentThread().getStackTrace()[2].getMethodName());
+        Log.d("Event", Thread.currentThread().getStackTrace()[2].getMethodName());
         Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), "vX : " + velocityX + " vY " + velocityY);
         return false;
     }
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-        Log.d("Event :", Thread.currentThread().getStackTrace()[2].getMethodName());
-        //float scale = detector.getCurrentSpan() / detector.getPreviousSpan();
-        float scale = mScaleGestureDetector.getScaleFactor();
+        Log.d("Event", Thread.currentThread().getStackTrace()[2].getMethodName());
+        float scale = detector.getScaleFactor();
         if (scale != 1) {
             mScale *= scale;
             Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), Float.toString(mScale));
-            myRenderer.getmModel().getTransform().setScale(mScale, mScale, mScale);
+            myRenderer.getmModel().getTransform().getScale().set(mScale, mScale, mScale);
             return true;
         }
         return false;
@@ -121,12 +125,37 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        Log.d("Event :", Thread.currentThread().getStackTrace()[2].getMethodName());
+        Log.d("Event", Thread.currentThread().getStackTrace()[2].getMethodName());
         return true;
     }
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
-        Log.d("Event :", Thread.currentThread().getStackTrace()[2].getMethodName());
+        Log.d("Event", Thread.currentThread().getStackTrace()[2].getMethodName());
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+       return false;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e) {
+        mDetectorMoveDoubleTap.onTouchEvent(e);
+        if (mDetectorMoveDoubleTap.hasMouvement()) {
+            float distanceX = mDetectorMoveDoubleTap.getP2().getX() - mDetectorMoveDoubleTap.getP1().getX();
+            float distanceY = mDetectorMoveDoubleTap.getP1().getY() - mDetectorMoveDoubleTap.getP2().getY();
+            Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), "dX : " + distanceX + " dY " + distanceY);
+            Float3 translate = myRenderer.getmModel().getTransform().getTranslate();
+            translate.set(translate.getX() + distanceX * TOUCH_SCALE_FACTOR, translate.getY() + distanceY * TOUCH_SCALE_FACTOR, translate.getZ());
+            Log.d("Translate", translate.getX() + " " + translate.getY() + " " + translate.getZ());
+            return true;
+        }
+        return false;
     }
 }

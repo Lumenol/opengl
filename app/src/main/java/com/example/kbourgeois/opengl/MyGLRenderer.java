@@ -37,7 +37,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES30.glEnable(GLES30.GL_DEPTH_TEST);
         GLES30.glDepthFunc(GLES30.GL_LEQUAL);
 
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 10, 0, 0, 0, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 1, 0, 0, 0, 0f, 1.0f, 0.0f);
         Matrix.perspectiveM(mProjectionMatrix, 0, 70.0f, 9.0f / 16.0f, 0.1f, 100.0f);
 
         mModel = ModelLoader.readOBJFile(mContext, "TARDIS/TARDIS.obj");

@@ -1,16 +1,16 @@
 package com.example.kbourgeois.opengl;
 
-import android.graphics.Matrix;
 import android.opengl.GLES30;
-import android.renderscript.Matrix4f;
 import android.util.Log;
+
+import com.example.kbourgeois.opengl.FloatK.Float3;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
-import java.util.Vector;
+import java.util.Observable;
+import java.util.Observer;
 
 public class Model3D {
 
@@ -52,8 +52,22 @@ public class Model3D {
 
     Model3D(float[] vertices, float[] normals, float[] uvs, int[] indices) {
 
-        bounds = new Bounds(vertices, COORDS_PER_VERTEX, 0);
-        transform.setCenter(bounds.getCenterX(),bounds.getCenterY(),bounds.getCenterZ());
+        bounds = new Bounds(transform, vertices, COORDS_PER_VERTEX, 0);
+        transform.getCenter().set(bounds.getCenter());
+
+
+        bounds.getPosition().addObserver((o, arg) -> {
+            Float3 position = (Float3) o;
+            Log.d("Position", position.toString());
+        });
+        bounds.getMin().addObserver((o, arg) -> {
+            Float3 position = (Float3) o;
+            Log.d("Min", position.toString());
+        });
+        bounds.getMax().addObserver((o, arg) -> {
+            Float3 position = (Float3) o;
+            Log.d("Max", position.toString());
+        });
 
         mVertices = vertices;
         mNormals = normals;
@@ -128,7 +142,7 @@ public class Model3D {
 
         // Apply the projection and view transformation.
         GLES30.glUniformMatrix4fv(mIdViewMatrix, 1, false, view, 0);
-        GLES30.glUniformMatrix4fv(mIdModelMatrix, 1, false, transform.getMatrix(), 0);
+        GLES30.glUniformMatrix4fv(mIdModelMatrix, 1, false, transform.getMatrix().getArray(), 0);
         GLES30.glUniformMatrix4fv(mIdProjMatrix, 1, false, projection, 0);
 
         GLES30.glEnableVertexAttribArray(mVertexID);
