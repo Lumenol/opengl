@@ -85,12 +85,13 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
                 distanceX = 0;
                 distanceY *= -1;
             }
-            Transform transform = myRenderer.getmModel().getTransform();
+            Transform transform = myRenderer.getModel().getTransform();
             switch (e2.getPointerCount()) {
                 case 1:
-                    Float3 rotate = transform.getRotate();
-                    rotate.set(rotate.getX() + Math.signum(distanceY), rotate.getY() + Math.signum(distanceX), rotate.getZ());
-                    Log.d("Rotation", rotate.getX() + " " + rotate.getY() + " " + rotate.getZ());
+                    Float3 rotation = transform.getRotation();
+                    rotation.set(rotation.getX() + Math.signum(distanceY), rotation.getY() + Math.signum(distanceX), rotation.getZ());
+                    transform.setRotation(rotation);
+                    Log.d("Rotation", rotation.getX() + " " + rotation.getY() + " " + rotation.getZ());
                     return true;
             }
 
@@ -117,7 +118,10 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
         if (scale != 1) {
             mScale *= scale;
             Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), Float.toString(mScale));
-            myRenderer.getmModel().getTransform().getScale().set(mScale, mScale, mScale);
+            Transform transform = myRenderer.getModel().getTransform();
+            Float3 localScale = transform.getLocalScale();
+            localScale.set(mScale, mScale, mScale);
+            transform.setLocalScale(localScale);
             return true;
         }
         return false;
@@ -136,7 +140,7 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
-       return false;
+        return false;
     }
 
     @Override
@@ -151,8 +155,10 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
             float distanceX = mDetectorMoveDoubleTap.getP2().getX() - mDetectorMoveDoubleTap.getP1().getX();
             float distanceY = mDetectorMoveDoubleTap.getP1().getY() - mDetectorMoveDoubleTap.getP2().getY();
             Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), "dX : " + distanceX + " dY " + distanceY);
-            Float3 translate = myRenderer.getmModel().getTransform().getTranslate();
+            Transform transform = myRenderer.getModel().getTransform();
+            Float3 translate = transform.getPosition();
             translate.set(translate.getX() + distanceX * TOUCH_SCALE_FACTOR, translate.getY() + distanceY * TOUCH_SCALE_FACTOR, translate.getZ());
+            transform.setPosition(translate);
             Log.d("Translate", translate.getX() + " " + translate.getY() + " " + translate.getZ());
             return true;
         }

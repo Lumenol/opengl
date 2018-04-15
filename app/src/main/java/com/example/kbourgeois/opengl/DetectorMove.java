@@ -1,6 +1,5 @@
 package com.example.kbourgeois.opengl;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.example.kbourgeois.opengl.FloatK.Float2;

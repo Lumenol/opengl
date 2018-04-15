@@ -1,9 +1,8 @@
 package com.example.kbourgeois.opengl.FloatK;
 
 import java.util.Arrays;
-import java.util.Observable;
 
-public abstract class FloatK extends Observable {
+public abstract class FloatK {
     private float[] value;
 
     protected FloatK(FloatK floatK) {
@@ -25,11 +24,6 @@ public abstract class FloatK extends Observable {
 
     public void set(FloatK floatk) {
         set(floatk.getArray());
-    }
-
-    final public void commit() {
-        setChanged();
-        super.notifyObservers();
     }
 
     @Override
@@ -54,14 +48,12 @@ public abstract class FloatK extends Observable {
 
     final protected void set(int i, float v) {
         value[i] = v;
-        commit();
     }
 
     final protected void set(float... v) {
-        for (int i = 0; i < Math.min(value.length,v.length); i++) {
+        for (int i = 0; i < Math.min(value.length, v.length); i++) {
             value[i] = v[i];
         }
-        commit();
     }
 
 }
