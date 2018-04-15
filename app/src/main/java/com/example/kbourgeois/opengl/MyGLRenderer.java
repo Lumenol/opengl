@@ -6,7 +6,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import com.example.kbourgeois.opengl.FloatK.Float3;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -18,7 +18,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private final float[] mViewMatrix = new float[16];
 
     private Context mContext;
-    private Model3D mModel;
+
+    private Transform transform = new Transform();
+
+    private List<Model3D> model3DS;
 
     public MyGLRenderer(Context context) {
         super();
@@ -26,8 +29,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Log.d("Debug : ", "MyGLRenderer");
     }
 
-    public Model3D getModel() {
-        return mModel;
+
+    public Transform getTransform() {
+        return transform;
     }
 
     @Override
@@ -42,9 +46,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 10, 0, 0, 0, 0f, 1.0f, 0.0f);
         Matrix.perspectiveM(mProjectionMatrix, 0, 70.0f, 9.0f / 16.0f, 0.1f, 100.0f);
 
-        mModel = ModelLoader.readOBJFile(mContext, "TARDIS/TARDIS.obj");
-        mModel.init("vertexshader.vert", "fragmentshader.frag",
-                "vPosition", "vNormal", "vTexCoord", R.drawable.no_texture);
+        model3DS = ModelLoader.readOBJFile(mContext, "TARDIS/TARDIS.obj");
+
+        for (int i = 0; i < model3DS.size(); i++) {
+            model3DS.get(i).getTransform().setParent(transform);
+            model3DS.get(i).init("vertexshader.vert", "fragmentshader.frag",
+                    "vPosition", "vNormal", "vTexCoord", R.drawable.no_texture);
+        }
         //mCube = new Cube();
         //mCube.addLight(new Light(0, 2, 0));
     }
@@ -60,7 +68,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         Log.d("Debug", "onDrawFrame");
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
-        mModel.draw(mProjectionMatrix, mViewMatrix);
+
+        for (int i = 0; i < model3DS.size(); i++) {
+            model3DS.get(i).draw(mProjectionMatrix, mViewMatrix);
+        }
+
     }
 
 }

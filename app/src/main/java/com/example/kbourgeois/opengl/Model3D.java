@@ -3,8 +3,6 @@ package com.example.kbourgeois.opengl;
 import android.opengl.GLES30;
 import android.util.Log;
 
-import com.example.kbourgeois.opengl.FloatK.Float3;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -47,8 +45,19 @@ public class Model3D {
     private Transform transform = new Transform();
     private Bounds bounds;
 
+    private String name;
+
+    public String getName() {
+        return name;
+    }
 
     Model3D(float[] vertices, float[] normals, float[] uvs, int[] indices) {
+        this(vertices, normals, uvs, indices, "");
+    }
+
+    Model3D(float[] vertices, float[] normals, float[] uvs, int[] indices, String name) {
+
+        this.name = name;
 
         bounds = new Bounds(vertices, COORDS_PER_VERTEX, 0);
         transform.setOffset(bounds.getLocalCenter());

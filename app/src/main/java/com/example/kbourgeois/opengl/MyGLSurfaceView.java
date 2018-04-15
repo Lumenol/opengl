@@ -85,7 +85,7 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
                 distanceX = 0;
                 distanceY *= -1;
             }
-            Transform transform = myRenderer.getModel().getTransform();
+            Transform transform = myRenderer.getTransform();
             switch (e2.getPointerCount()) {
                 case 1:
                     Float3 rotation = transform.getLocalRotation();
@@ -118,7 +118,7 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
         if (scale != 1) {
             mScale *= scale;
             Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), Float.toString(mScale));
-            Transform transform = myRenderer.getModel().getTransform();
+            Transform transform = myRenderer.getTransform();
             Float3 localScale = transform.getScale();
             localScale.set(mScale, mScale, mScale);
             transform.setScale(localScale);
@@ -155,7 +155,7 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
             float distanceX = mDetectorMoveDoubleTap.getP2().getX() - mDetectorMoveDoubleTap.getP1().getX();
             float distanceY = mDetectorMoveDoubleTap.getP1().getY() - mDetectorMoveDoubleTap.getP2().getY();
             Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), "dX : " + distanceX + " dY " + distanceY);
-            Transform transform = myRenderer.getModel().getTransform();
+            Transform transform = myRenderer.getTransform();
             Float3 translate = transform.getPosition();
             translate.set(translate.getX() + distanceX * TOUCH_SCALE_FACTOR, translate.getY() + distanceY * TOUCH_SCALE_FACTOR, translate.getZ());
             transform.setPosition(translate);
