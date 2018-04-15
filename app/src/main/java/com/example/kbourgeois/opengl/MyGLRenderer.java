@@ -6,6 +6,8 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import com.example.kbourgeois.opengl.FloatK.Float3;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -48,6 +50,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         Transform transform = new Transform();
         mModel.getTransform().setParent(transform);
+
+
+        transform.setPosition(new Float3(0,4,0));
+        transform.setRotation(new Float3(-90,0,0));
+
+        //transform.setRotation(new Float3(0,0,0));
 
     }
 

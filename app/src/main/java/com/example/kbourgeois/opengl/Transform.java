@@ -128,23 +128,26 @@ public class Transform extends Observable implements Observer {
     }
 
     private void update() {
+
         if (null != parent) {
             Matrix.multiplyMV(this.position.getArray(), 0, parent.localToWorldMatrix.getArray(), 0, this.localPosition.getArray(), 0);
             Matrix.multiplyMV(this.rotation.getArray(), 0, parent.localToWorldMatrix.getArray(), 0, this.localRotation.getArray(), 0);
             Matrix.multiplyMV(this.scale.getArray(), 0, parent.localToWorldMatrix.getArray(), 0, this.localScale.getArray(), 0);
+            localToWorldMatrix.load(parent.localToWorldMatrix);
         } else {
             position.set(localPosition);
             rotation.set(localRotation);
             scale.set(localScale);
+            localToWorldMatrix.loadIdentity();
         }
 
-
-        localToWorldMatrix.loadTranslate(localPosition.getX(), localPosition.getY(), localPosition.getZ());
+        localToWorldMatrix.translate(localPosition.getX(), localPosition.getY(), localPosition.getZ());
+        localToWorldMatrix.scale(localScale.getX(), localScale.getY(), localScale.getZ());
         localToWorldMatrix.rotate(localRotation.getX(), 1, 0, 0);
         localToWorldMatrix.rotate(localRotation.getY(), 0, 1, 0);
         localToWorldMatrix.rotate(localRotation.getZ(), 0, 0, 1);
-        localToWorldMatrix.scale(localScale.getX(), localScale.getY(), localScale.getZ());
         localToWorldMatrix.translate(-offset.getX(), -offset.getY(), -offset.getZ());
+
 
         worldToLocalMatrix.load(localToWorldMatrix);
         worldToLocalMatrix.inverse();

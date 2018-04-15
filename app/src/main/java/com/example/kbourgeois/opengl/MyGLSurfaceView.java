@@ -14,6 +14,7 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
     private final float TOUCH_SCALE_FACTOR = 0.01f;
 
     private float mScale = 1;
+    private float mRotate = 0;
     private DetectorMove mDetectorMoveDoubleTap = new DetectorMove();
 
 
@@ -89,7 +90,8 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
             switch (e2.getPointerCount()) {
                 case 1:
                     Float3 rotation = transform.getRotation();
-                    rotation.set(rotation.getX() + Math.signum(distanceY), rotation.getY() + Math.signum(distanceX), rotation.getZ());
+                    rotation.set(0, mRotate += Math.signum(distanceX), 0);
+                    //rotation.set(rotation.getX() + Math.signum(distanceY), rotation.getY() + Math.signum(distanceX), rotation.getZ());
                     transform.setRotation(rotation);
                     Log.d("Rotation", rotation.getX() + " " + rotation.getY() + " " + rotation.getZ());
                     return true;
@@ -119,9 +121,9 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
             mScale *= scale;
             Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), Float.toString(mScale));
             Transform transform = myRenderer.getModel().getTransform();
-            Float3 localScale = transform.getLocalScale();
+            Float3 localScale = transform.getScale();
             localScale.set(mScale, mScale, mScale);
-            transform.setLocalScale(localScale);
+            transform.setScale(localScale);
             return true;
         }
         return false;
