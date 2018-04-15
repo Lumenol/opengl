@@ -47,16 +47,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 "vPosition", "vNormal", "vTexCoord", R.drawable.no_texture);
         //mCube = new Cube();
         //mCube.addLight(new Light(0, 2, 0));
-
-        Transform transform = new Transform();
-        mModel.getTransform().setParent(transform);
-
-
-        transform.setPosition(new Float3(0,4,0));
-        transform.setRotation(new Float3(-90,0,0));
-
-        //transform.setRotation(new Float3(0,0,0));
-
     }
 
     @Override

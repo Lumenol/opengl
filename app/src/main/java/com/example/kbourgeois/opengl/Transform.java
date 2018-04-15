@@ -1,6 +1,5 @@
 package com.example.kbourgeois.opengl;
 
-import android.opengl.Matrix;
 import android.renderscript.Matrix4f;
 
 import com.example.kbourgeois.opengl.FloatK.Float3;
@@ -32,7 +31,6 @@ public class Transform extends Observable implements Observer {
     private Float4 localScale = new Float4(1, 1, 1, 1);
 
     private Matrix4f localToWorldMatrix = new Matrix4f();
-    private Matrix4f worldToLocalMatrix = new Matrix4f();
 
     public Transform() {
         update();
@@ -61,7 +59,7 @@ public class Transform extends Observable implements Observer {
         if (parent == null) {
             this.localPosition.set(position.getX(), position.getY(), position.getZ(), 1);
         } else {
-            Matrix.multiplyMV(this.localPosition.getArray(), 0, parent.worldToLocalMatrix.getArray(), 0, new float[]{position.getX(), position.getY(), position.getZ(), 1}, 0);
+            this.localPosition.set(position.getX() - parent.position.getX(), position.getY() - parent.position.getY(), position.getZ() - parent.position.getZ());
         }
         update();
     }
@@ -74,7 +72,7 @@ public class Transform extends Observable implements Observer {
         if (parent == null) {
             this.localRotation.set(rotation.getX(), rotation.getY(), rotation.getZ(), 1);
         } else {
-            Matrix.multiplyMV(this.localRotation.getArray(), 0, parent.worldToLocalMatrix.getArray(), 0, new float[]{rotation.getX(), rotation.getY(), rotation.getZ(), 1}, 0);
+            this.localRotation.set(rotation.getX() - parent.rotation.getX(), rotation.getY() - parent.rotation.getY(), rotation.getZ() - parent.rotation.getZ());
         }
         update();
     }
@@ -87,7 +85,7 @@ public class Transform extends Observable implements Observer {
         if (parent == null) {
             this.localScale.set(scale.getX(), scale.getY(), scale.getZ(), 1);
         } else {
-            Matrix.multiplyMV(this.localScale.getArray(), 0, parent.worldToLocalMatrix.getArray(), 0, new float[]{scale.getX(), scale.getY(), scale.getZ(), 1}, 0);
+            this.localScale.set(scale.getX() - parent.scale.getX(), scale.getY() - parent.scale.getY(), scale.getZ() - parent.scale.getZ());
         }
         update();
     }
@@ -123,34 +121,24 @@ public class Transform extends Observable implements Observer {
         return new Matrix4f(localToWorldMatrix.getArray());
     }
 
-    public Matrix4f getWorldToLocalMatrix() {
-        return new Matrix4f(worldToLocalMatrix.getArray());
-    }
-
     private void update() {
 
         if (null != parent) {
-            Matrix.multiplyMV(this.position.getArray(), 0, parent.localToWorldMatrix.getArray(), 0, this.localPosition.getArray(), 0);
-            Matrix.multiplyMV(this.rotation.getArray(), 0, parent.localToWorldMatrix.getArray(), 0, this.localRotation.getArray(), 0);
-            Matrix.multiplyMV(this.scale.getArray(), 0, parent.localToWorldMatrix.getArray(), 0, this.localScale.getArray(), 0);
-            localToWorldMatrix.load(parent.localToWorldMatrix);
+            this.position.set(parent.position.getX() + localPosition.getX(), parent.position.getY() + localPosition.getY(), parent.position.getZ() + localPosition.getZ());
+            this.rotation.set(parent.rotation.getX() + localRotation.getX(), parent.rotation.getY() + localRotation.getY(), parent.rotation.getZ() + localRotation.getZ());
+            this.scale.set(parent.scale.getX() + localScale.getX(), parent.scale.getY() + localScale.getY(), parent.scale.getZ() + localScale.getZ());
         } else {
             position.set(localPosition);
             rotation.set(localRotation);
             scale.set(localScale);
-            localToWorldMatrix.loadIdentity();
         }
 
-        localToWorldMatrix.translate(localPosition.getX(), localPosition.getY(), localPosition.getZ());
-        localToWorldMatrix.scale(localScale.getX(), localScale.getY(), localScale.getZ());
-        localToWorldMatrix.rotate(localRotation.getX(), 1, 0, 0);
-        localToWorldMatrix.rotate(localRotation.getY(), 0, 1, 0);
-        localToWorldMatrix.rotate(localRotation.getZ(), 0, 0, 1);
+        localToWorldMatrix.loadTranslate(position.getX(), position.getY(), position.getZ());
+        localToWorldMatrix.scale(scale.getX(), scale.getY(), scale.getZ());
+        localToWorldMatrix.rotate(rotation.getX(), 1, 0, 0);
+        localToWorldMatrix.rotate(rotation.getY(), 0, 1, 0);
+        localToWorldMatrix.rotate(rotation.getZ(), 0, 0, 1);
         localToWorldMatrix.translate(-offset.getX(), -offset.getY(), -offset.getZ());
-
-
-        worldToLocalMatrix.load(localToWorldMatrix);
-        worldToLocalMatrix.inverse();
 
         setChanged();
         notifyObservers();
