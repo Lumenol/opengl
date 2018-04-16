@@ -40,7 +40,7 @@ public class Model3D {
     private int mIdViewMatrix;
     private int mIdProjMatrix;
     private int mIdModelMatrix;
-    private int[] mTextureID;
+    private Texture mTexture;
 
     private Transform transform = new Transform();
     private Bounds bounds;
@@ -53,6 +53,10 @@ public class Model3D {
 
     Model3D(float[] vertices, float[] normals, float[] uvs, int[] indices) {
         this(vertices, normals, uvs, indices, "");
+    }
+
+    public Bounds getBounds() {
+        return bounds;
     }
 
     Model3D(float[] vertices, float[] normals, float[] uvs, int[] indices, String name) {
@@ -93,9 +97,19 @@ public class Model3D {
 
     }
 
-    void init(String vertexShader, String fragmentShader, String vertexLoc,
-              String normalLoc, String texLoc, int texture) {
+    public Texture getmTexture() {
+        return mTexture;
+    }
 
+    public void setmTexture(Texture mTexture) {
+        this.mTexture = mTexture;
+    }
+
+    void init(String vertexShader, String fragmentShader, String vertexLoc,
+              String normalLoc, String texLoc, Texture texture) {
+
+        mTexture = texture;
+        texture.charger();
 
         mProgram = GLES30.glCreateProgram();
 
@@ -111,13 +125,6 @@ public class Model3D {
         mNormalID = GLES30.glGetAttribLocation(mProgram, normalLoc);
         mTexID = GLES30.glGetAttribLocation(mProgram, texLoc);
 
-
-        mTextureID = new int[1];
-        GLES30.glGenTextures(1, mTextureID, 0);
-
-        GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
-        ShaderUtilities.loadTexture(texture, mTextureID, 0);
-
         mIdProjMatrix = GLES30.glGetUniformLocation(mProgram, "projection");
         mIdViewMatrix = GLES30.glGetUniformLocation(mProgram, "view");
         mIdModelMatrix = GLES30.glGetUniformLocation(mProgram, "model");
@@ -132,12 +139,6 @@ public class Model3D {
     void draw(float[] projection, float[] view) {
         GLES30.glUseProgram(mProgram);
 
-
-        // Apply the projection and view transformation.
-        GLES30.glUniformMatrix4fv(mIdViewMatrix, 1, false, view, 0);
-        GLES30.glUniformMatrix4fv(mIdModelMatrix, 1, false, transform.getLocalToWorldMatrix().getArray(), 0);
-        GLES30.glUniformMatrix4fv(mIdProjMatrix, 1, false, projection, 0);
-
         GLES30.glEnableVertexAttribArray(mVertexID);
         GLES30.glVertexAttribPointer(
                 mVertexID, 3, GLES30.GL_FLOAT, false, VERTEX_STRIDE, mVertexBuffer);
@@ -150,12 +151,24 @@ public class Model3D {
         GLES30.glVertexAttribPointer(
                 mNormalID, 2, GLES30.GL_FLOAT, false, NORMAL_STRIDE, mNormalBuffer);
 
+        // Apply the projection and view transformation.
+        GLES30.glUniformMatrix4fv(mIdViewMatrix, 1, false, view, 0);
+        GLES30.glUniformMatrix4fv(mIdModelMatrix, 1, false, transform.getLocalToWorldMatrix().getArray(), 0);
+        GLES30.glUniformMatrix4fv(mIdProjMatrix, 1, false, projection, 0);
+
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexture.getID());
+
         GLES30.glDrawElements(
                 GLES30.GL_TRIANGLES, mIndices.length, GLES30.GL_UNSIGNED_INT, mIndexBuffer);
+
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+
 
         GLES30.glDisableVertexAttribArray(mVertexID);
         GLES30.glDisableVertexAttribArray(mTexID);
         GLES30.glDisableVertexAttribArray(mNormalID);
+
+        GLES30.glUseProgram(0);
 
     }
 
@@ -179,5 +192,11 @@ public class Model3D {
 
     public float[] getmVertices() {
         return mVertices;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        clean();
+        super.finalize();
     }
 }

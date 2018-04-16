@@ -13,11 +13,11 @@ public class ShaderUtilities {
 
     private static Context context;
 
-    public static void init(Context c){
+    public static void init(Context c) {
         context = c;
     }
 
-    public static int loadShader(int type, String filename){
+    public static int loadShader(int type, String filename) {
         try {
             InputStream is = context.getAssets().open(filename);
 
@@ -41,22 +41,27 @@ public class ShaderUtilities {
             }
             Log.d("Debug : ", "Shader created");
             return shader;
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(e.toString(), e.getMessage());
             return -1;
         }
     }
 
-    public static int loadTexture(final int resourceId, int[] textureHandle , int index)
-    {
+    public static int loadTexture(final int resourceId, int[] textureHandle, int index) {
 
-        if (textureHandle[index] != 0)
-        {
+        if (textureHandle[index] != 0) {
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;   // No pre-scaling
 
             // Read in the resource
-            final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
+            Bitmap bitmapSource = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
+            int[] pixels = new int[bitmapSource.getWidth() * bitmapSource.getHeight()];
+
+            bitmapSource.getPixels(pixels, (bitmapSource.getHeight() - 1) * bitmapSource.getWidth(), -bitmapSource.getWidth(), 0, 0, bitmapSource.getWidth(), bitmapSource.getHeight());
+
+            Bitmap bitmap = Bitmap.createBitmap(pixels, bitmapSource.getWidth(), bitmapSource.getHeight(), bitmapSource.getConfig());
+
+            bitmapSource.recycle();
 
             // Bind to the texture in OpenGL
             GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureHandle[index]);
@@ -68,12 +73,13 @@ public class ShaderUtilities {
             // Load the bitmap into the bound texture.
             GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, bitmap, 0);
 
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+
             // Recycle the bitmap, since its data has been loaded into OpenGL.
             bitmap.recycle();
         }
 
-        if (textureHandle[index] == 0)
-        {
+        if (textureHandle[index] == 0) {
             throw new RuntimeException("Error loading texture.");
         }
 

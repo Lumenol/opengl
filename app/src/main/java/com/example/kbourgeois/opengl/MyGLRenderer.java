@@ -48,10 +48,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         model3DS = ModelLoader.readOBJFile(mContext, "TARDIS/TARDIS.obj");
 
+        int[] textures = new int[]{R.drawable.tardis_inside_d, R.drawable.tardis_bulb_d, R.drawable.tardis_glass2_d, R.drawable.tardis_d, R.drawable.tardis_glass1_d};
+
         for (int i = 0; i < model3DS.size(); i++) {
-            model3DS.get(i).getTransform().setParent(transform);
-            model3DS.get(i).init("vertexshader.vert", "fragmentshader.frag",
-                    "vPosition", "vNormal", "vTexCoord", R.drawable.no_texture);
+            Model3D model3D = model3DS.get(i);
+            model3D.getTransform().setParent(transform);
+            model3D.init("vertexshader.vert", "fragmentshader.frag",
+                    "vPosition", "vNormal", "vTexCoord", new Texture(textures[i]));
+
+            model3D.getTransform().setOffset(model3DS.get(3).getBounds().getLocalCenter());
         }
         //mCube = new Cube();
         //mCube.addLight(new Light(0, 2, 0));

@@ -98,7 +98,7 @@ public class Transform extends Observable implements Observer {
             this.localScale.set(scale.getX(), scale.getY(), scale.getZ(), 1);
         } else {
             parent.update();
-            this.localScale.set(scale.getX() - parent.scale.getX(), scale.getY() - parent.scale.getY(), scale.getZ() - parent.scale.getZ());
+            this.localScale.set(scale.getX()/ parent.scale.getX(), scale.getY() / parent.scale.getY(), scale.getZ() / parent.scale.getZ());
         }
         setChanged();
     }
@@ -144,7 +144,7 @@ public class Transform extends Observable implements Observer {
                 parent.update();
                 this.position.set(parent.position.getX() + localPosition.getX(), parent.position.getY() + localPosition.getY(), parent.position.getZ() + localPosition.getZ());
                 this.rotation.set(parent.rotation.getX() + localRotation.getX(), parent.rotation.getY() + localRotation.getY(), parent.rotation.getZ() + localRotation.getZ());
-                this.scale.set(parent.scale.getX() + localScale.getX(), parent.scale.getY() + localScale.getY(), parent.scale.getZ() + localScale.getZ());
+                this.scale.set(parent.scale.getX() * localScale.getX(), parent.scale.getY() * localScale.getY(), parent.scale.getZ() * localScale.getZ());
             } else {
                 position.set(localPosition);
                 rotation.set(localRotation);
@@ -152,11 +152,11 @@ public class Transform extends Observable implements Observer {
             }
 
             localToWorldMatrix.loadTranslate(position.getX(), position.getY(), position.getZ());
+            localToWorldMatrix.translate(-offset.getX(), -offset.getY(), -offset.getZ());
             localToWorldMatrix.scale(scale.getX(), scale.getY(), scale.getZ());
             localToWorldMatrix.rotate(rotation.getX(), 1, 0, 0);
             localToWorldMatrix.rotate(rotation.getY(), 0, 1, 0);
             localToWorldMatrix.rotate(rotation.getZ(), 0, 0, 1);
-            localToWorldMatrix.translate(-offset.getX(), -offset.getY(), -offset.getZ());
 
             needUpdate = false;
         }
