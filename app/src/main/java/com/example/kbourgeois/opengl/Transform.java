@@ -152,11 +152,11 @@ public class Transform extends Observable implements Observer {
             }
 
             localToWorldMatrix.loadTranslate(position.getX(), position.getY(), position.getZ());
-            localToWorldMatrix.translate(-offset.getX(), -offset.getY(), -offset.getZ());
             localToWorldMatrix.scale(scale.getX(), scale.getY(), scale.getZ());
             localToWorldMatrix.rotate(rotation.getX(), 1, 0, 0);
             localToWorldMatrix.rotate(rotation.getY(), 0, 1, 0);
             localToWorldMatrix.rotate(rotation.getZ(), 0, 0, 1);
+            localToWorldMatrix.translate(-offset.getX(), -offset.getY(), -offset.getZ());
 
             needUpdate = false;
         }
