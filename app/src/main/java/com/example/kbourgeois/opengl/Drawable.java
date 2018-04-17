@@ -4,6 +4,8 @@ import android.renderscript.Matrix4f;
 
 public interface Drawable {
 
+    String getName();
+
     Transform getTransform();
 
     Bounds getBounds();

@@ -41,10 +41,12 @@ public class Model3D implements Drawable {
     private int mIdViewMatrix;
     private int mIdProjMatrix;
     private int mIdModelMatrix;
-    private Texture mTexture = new Texture();
 
     private Transform transform = new Transform();
-    private Bounds bounds;
+
+    private Texture mTexture;
+
+    private BoundsSimple bounds;
 
     private String name;
 
@@ -56,7 +58,7 @@ public class Model3D implements Drawable {
         this(vertices, normals, uvs, indices, "");
     }
 
-    public Bounds getBounds() {
+    public BoundsSimple getBounds() {
         return bounds;
     }
 
@@ -69,8 +71,8 @@ public class Model3D implements Drawable {
 
         this.name = name;
 
-        bounds = new Bounds(vertices, COORDS_PER_VERTEX, 0);
-        transform.setOffset(bounds.getLocalCenter());
+        bounds = new BoundsSimple(vertices, COORDS_PER_VERTEX, 0);
+        //transform.setOffset(bounds.getLocalCenter());
 
         mVertices = vertices;
         mNormals = normals;
@@ -78,6 +80,7 @@ public class Model3D implements Drawable {
         mIndices = indices;
 
         ByteBuffer byteBuf = ByteBuffer.allocateDirect(mVertices.length * 4);
+
         byteBuf.order(ByteOrder.nativeOrder());
         mVertexBuffer = byteBuf.asFloatBuffer();
         mVertexBuffer.put(mVertices);

@@ -25,7 +25,7 @@ public class Materiel {
                         materiels.put(materiel.getName(), materiel);
                     }
                     materiel = new Materiel();
-                    materiel.name=split[1];
+                    materiel.name = split[1];
                     break;
 
                 case "Ns":
@@ -82,7 +82,7 @@ public class Materiel {
         if (materiel != null) {
             materiels.put(materiel.getName(), materiel);
         }
-
+        sc.close();
         return materiels;
 
     }

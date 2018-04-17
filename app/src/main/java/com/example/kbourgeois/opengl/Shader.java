@@ -61,10 +61,6 @@ public class Shader {
             GLES30.glAttachShader(getProgramID(), idShader[i]);
         }
 
-        GLES30.glBindAttribLocation(getProgramID(), 0, "vPosition");
-        GLES30.glBindAttribLocation(getProgramID(), 1, "vNormal");
-        GLES30.glBindAttribLocation(getProgramID(), 2, "vTexCoord");
-
         GLES30.glLinkProgram(getProgramID());
 
         int[] params = new int[]{0};
@@ -93,13 +89,12 @@ public class Shader {
 
         try {
             InputStream inputStream = context.getAssets().open(fichierSource);
-            Scanner scanner = new Scanner(inputStream);
+            Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
 
             if (scanner.hasNext()) {
-                codeSource.append(scanner.nextLine());
-                codeSource.append("\n");
+                codeSource.append(scanner.next());
             }
-
+            scanner.close();
             inputStream.close();
 
         } catch (IOException e) {
