@@ -1,6 +1,7 @@
 package com.example.kbourgeois.opengl;
 
 import android.opengl.GLES30;
+import android.renderscript.Matrix4f;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -8,7 +9,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public class Model3D {
+public class Model3D implements Drawable {
 
     private int mVertexID;
     private int mTexID;
@@ -40,7 +41,7 @@ public class Model3D {
     private int mIdViewMatrix;
     private int mIdProjMatrix;
     private int mIdModelMatrix;
-    private Texture mTexture;
+    private Texture mTexture = new Texture();
 
     private Transform transform = new Transform();
     private Bounds bounds;
@@ -57,6 +58,11 @@ public class Model3D {
 
     public Bounds getBounds() {
         return bounds;
+    }
+
+    @Override
+    public void draw(Matrix4f projection, Matrix4f view) {
+        draw(projection.getArray(), view.getArray());
     }
 
     Model3D(float[] vertices, float[] normals, float[] uvs, int[] indices, String name) {
@@ -106,10 +112,7 @@ public class Model3D {
     }
 
     void init(String vertexShader, String fragmentShader, String vertexLoc,
-              String normalLoc, String texLoc, Texture texture) {
-
-        mTexture = texture;
-        texture.charger();
+              String normalLoc, String texLoc) {
 
         mProgram = GLES30.glCreateProgram();
 

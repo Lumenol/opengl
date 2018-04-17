@@ -6,7 +6,9 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -21,7 +23,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private Transform transform = new Transform();
 
-    private List<Model3D> model3DS;
+    private Map<String, Model3D> model3DS;
 
     public MyGLRenderer(Context context) {
         super();
@@ -48,16 +50,21 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         model3DS = ModelLoader.readOBJFile(mContext, "TARDIS/TARDIS.obj");
 
-        int[] textures = new int[]{R.drawable.tardis_inside_d, R.drawable.tardis_bulb_d, R.drawable.tardis_glass2_d, R.drawable.tardis_d, R.drawable.tardis_glass1_d};
+        //int[] textures = new int[]{R.drawable.tardis_inside_d, R.drawable.tardis_bulb_d, R.drawable.tardis_glass2_d, R.drawable.tardis_d, R.drawable.tardis_glass1_d};
 
-        for (int i = 0; i < model3DS.size(); i++) {
-            Model3D model3D = model3DS.get(i);
-            model3D.getTransform().setParent(transform);
-            model3D.init("vertexshader.vert", "fragmentshader.frag",
-                    "vPosition", "vNormal", "vTexCoord", new Texture(textures[i]));
+        Model3D tardis = model3DS.get("TARDIS");
 
-            model3D.getTransform().setOffset(model3DS.get(3).getBounds().getLocalCenter());
+        Collection<Model3D> values = model3DS.values();
+        for (Iterator<Model3D> iterator = values.iterator(); iterator.hasNext(); ) {
+            Model3D next = iterator.next();
+
+            next.getTransform().setParent(transform);
+            next.init("vertexshader.vert", "fragmentshader.frag",
+                    "vPosition", "vNormal", "vTexCoord");
+
+            next.getTransform().setOffset(tardis.getBounds().getLocalCenter());
         }
+
         //mCube = new Cube();
         //mCube.addLight(new Light(0, 2, 0));
     }
@@ -74,8 +81,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Log.d("Debug", "onDrawFrame");
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
-        for (int i = 0; i < model3DS.size(); i++) {
-            model3DS.get(i).draw(mProjectionMatrix, mViewMatrix);
+        for (Iterator<Model3D> iterator = model3DS.values().iterator(); iterator.hasNext(); ) {
+            Model3D next = iterator.next();
+            next.draw(mProjectionMatrix, mViewMatrix);
         }
 
     }

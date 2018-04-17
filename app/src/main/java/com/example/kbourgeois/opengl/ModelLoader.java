@@ -5,8 +5,8 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 public class ModelLoader {
@@ -38,8 +38,11 @@ public class ModelLoader {
         }
     }
 
-    public static List<Model3D> readOBJFile(final Context c, final String filename) {
-        List<Model3D> model3DS = new ArrayList<>();
+    public static Map<String, Model3D> readOBJFile(final Context c, final String filename) {
+        Map<String, Model3D> model3DS = new HashMap<>();
+
+        Map<String, Materiel> materiels = new HashMap<>();
+
         try {
             Log.i("Info", "readOBJFile: Reading file");
             InputStream is = c.getAssets().open(filename);
@@ -54,6 +57,8 @@ public class ModelLoader {
 
             int cpt = 2;
 
+            String materiel = "";
+
             String name1 = "", name2 = "";
 
             while (sc.hasNext()) {
@@ -62,6 +67,15 @@ public class ModelLoader {
                     String[] splited = s.split("\\s");
 
                     switch (splited[0]) {
+
+                        case "mtllib":
+                            try {
+                                materiels = Materiel.readMateriel(c.getAssets().open(splited[1]));
+                            } catch (IOException e) {
+                                Log.e("ModelReader", "Materiel", e);
+                            }
+                            break;
+
                         case "v":
                             vertices_tmp.add(Float.valueOf(splited[1]));
                             vertices_tmp.add(Float.valueOf(splited[2]));
@@ -99,6 +113,11 @@ public class ModelLoader {
                             }
                             cpt--;
                             break;
+
+                        case "usemtl":
+                            materiel = splited[1];
+                            break;
+
                         default:
                             break;
                     }
@@ -108,11 +127,15 @@ public class ModelLoader {
                 }
                 Model3D model3D = makeModel(vertices_tmp, normals_tmp, UVs_tmp, verticesIndex, normalsIndex, UVsIndex, name1);
                 if (model3D != null) {
-                    model3DS.add(model3D);
+                    Materiel mtl = materiels.get(materiel);
+                    if (mtl != null) {
+                        model3D.setmTexture(new Texture(c, mtl.getMap_Kd()));
+                    }
+                    model3DS.put(model3D.getName(), model3D);
                 }
-                //vertices_tmp.clear();
-                //normals_tmp.clear();
-                //UVs_tmp.clear();
+
+                materiel = "";
+
                 verticesIndex.clear();
                 normalsIndex.clear();
                 UVsIndex.clear();

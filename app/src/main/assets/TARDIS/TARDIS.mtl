@@ -9,7 +9,7 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 1
-map_Kd TARDIS_D.tga
+map_Kd TARDIS/TARDIS_D.png
 
 newmtl TARDIS_Bulb
 Ns 96.078431
@@ -19,7 +19,7 @@ Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd TARDIS_Bulb_D.tga
+map_Kd TARDIS/TARDIS_Bulb_D.png
 
 newmtl TARDIS_Glass1
 Ns 96.078431
@@ -29,7 +29,7 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 0.000000
 illum 1
-map_Kd TARDIS_Glass1_D.tga
+map_Kd TARDIS/TARDIS_Glass1_D.png
 
 newmtl TARDIS_Glass2
 Ns 96.078431
@@ -39,7 +39,7 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 0.000000
 illum 1
-map_Kd TARDIS_Glass2_D.tga
+map_Kd TARDIS/TARDIS_Glass2_D.png
 
 newmtl TARDIS_Inside
 Ns 96.078431
@@ -49,4 +49,4 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 1
-map_Kd TARDIS_inside_D.tga
+map_Kd TARDIS/TARDIS_inside_D.png
