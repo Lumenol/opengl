@@ -9,7 +9,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public class Model3D implements Drawable {
+public class Model3D  {
 
     private int mVertexID;
     private int mTexID;
@@ -62,7 +62,6 @@ public class Model3D implements Drawable {
         return bounds;
     }
 
-    @Override
     public void draw(Matrix4f projection, Matrix4f view) {
         draw(projection.getArray(), view.getArray());
     }

@@ -20,6 +20,8 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
     private GestureDetectorCompat mGestureDetectorCompat;
     private ScaleGestureDetector mScaleGestureDetector;
 
+
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -43,9 +45,9 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
         Log.d("Debug : ", "Initialize renderer");
         setRenderer(myRenderer);
         Log.d("Debug : ", "Set renderer");
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         Log.d("Debug : ", "Set render mode");
-        //setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 
         mGestureDetectorCompat = new GestureDetectorCompat(mainActivity, this);
         mGestureDetectorCompat.setOnDoubleTapListener(this);

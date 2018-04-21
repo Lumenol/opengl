@@ -1,8 +1,7 @@
 package com.example.kbourgeois.opengl;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,10 +11,20 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class OpenGLActivity extends Activity {
+
+    private static Context context;
+
+    public static Context getContext() {
+        return context;
+    }
+
+    ;
+
     private GLSurfaceView mGLView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        context = this;
         super.onCreate(savedInstanceState);
 
         ShaderUtilities.init(this);
@@ -41,7 +50,7 @@ public class OpenGLActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-       // getMenuInflater().inflate(Menu.menu_main, menu);
+        // getMenuInflater().inflate(Menu.menu_main, menu);
         return true;
     }
 

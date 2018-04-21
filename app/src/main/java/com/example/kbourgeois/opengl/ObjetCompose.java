@@ -6,13 +6,15 @@ import android.renderscript.Matrix4f;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ObjetCompose implements Drawable {
+public class ObjetCompose extends GameObject implements Drawable {
 
-    private Transform transform = new Transform();
+    private Map<Object, Object> attributs = new HashMap<>();
+
     private Bounds bounds;
 
     private List<Drawable> drawables = new ArrayList<>();
@@ -39,12 +41,12 @@ public class ObjetCompose implements Drawable {
             Drawable next = iterator.next();
 
             bounds.add(next.getBounds());
-            next.getTransform().setParent(transform);
+            next.getTransform().setParent(getTransform());
         }
 
         this.bounds = new BoundsCompose(bounds);
-        this.bounds.setParent(transform);
-        transform.setOffset(this.bounds.getLocalCenter());
+        this.bounds.setParent(getTransform());
+        getTransform().setOffset(this.bounds.getLocalCenter());
 
         for (Iterator<? extends Drawable> iterator = drawables.iterator(); iterator.hasNext(); ) {
             Drawable next = iterator.next();
@@ -59,10 +61,6 @@ public class ObjetCompose implements Drawable {
         init(drawables);
     }
 
-    @Override
-    public Transform getTransform() {
-        return transform;
-    }
 
     @Override
     public Bounds getBounds() {
@@ -76,4 +74,5 @@ public class ObjetCompose implements Drawable {
             next.draw(projection, view);
         }
     }
+
 }

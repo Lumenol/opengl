@@ -13,6 +13,8 @@ import javax.microedition.khronos.opengles.GL10;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
+    private long lastFrame = System.currentTimeMillis();
+
     private final Matrix4f projectionMatrix = new Matrix4f();
     private final Matrix4f viewMatrix = new Matrix4f();
 
@@ -20,7 +22,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private Transform transform = new Transform();
 
-    private Drawable model;
+    private ObjetCompose model;
 
     public MyGLRenderer(Context context) {
         super();
@@ -47,6 +49,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         model = new ObjetCompose(mContext, "TARDIS/TARDIS.obj", new Shader(mContext, "vertexshader.vert", "fragmentshader.frag"));
         model.getTransform().setParent(transform);
+
+        model.addComponant(RotationTardis.class);
     }
 
     @Override
@@ -56,8 +60,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         projectionMatrix.loadPerspective(70.0f, (float) width / height, 0.1f, 100.0f);
     }
 
+    private void update(long dt) {
+        model.update(dt);
+    }
+
     @Override
     public void onDrawFrame(GL10 gl) {
+        update(System.currentTimeMillis() - lastFrame);
+        lastFrame = System.currentTimeMillis();
         Log.d("Debug", "onDrawFrame");
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         model.draw(projectionMatrix, viewMatrix);
