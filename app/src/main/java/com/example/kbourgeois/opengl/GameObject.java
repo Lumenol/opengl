@@ -24,7 +24,7 @@ public class GameObject {
         return componants.get(c);
     }
 
-    final public void update(long dt) {
+    final public void update(float dt) {
         for (Iterator<MonoBehaviour> iterator = nouveauxBehaviour.iterator(); iterator.hasNext(); ) {
             MonoBehaviour next = iterator.next();
             next.start();

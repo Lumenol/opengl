@@ -14,6 +14,6 @@ public abstract class MonoBehaviour {
 
     public abstract void start();
 
-    public abstract void update(long dt);
+    public abstract void update(float dt);
 
 }

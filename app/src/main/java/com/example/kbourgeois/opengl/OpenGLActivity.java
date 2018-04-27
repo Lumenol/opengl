@@ -12,19 +12,10 @@ import android.view.WindowManager;
 
 public class OpenGLActivity extends Activity {
 
-    private static Context context;
-
-    public static Context getContext() {
-        return context;
-    }
-
-    ;
-
     private GLSurfaceView mGLView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        context = this;
         super.onCreate(savedInstanceState);
 
         ShaderUtilities.init(this);

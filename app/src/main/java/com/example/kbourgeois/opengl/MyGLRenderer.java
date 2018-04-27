@@ -7,6 +7,10 @@ import android.opengl.Matrix;
 import android.renderscript.Matrix4f;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -21,6 +25,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Context mContext;
 
     private Transform transform = new Transform();
+
+    private Collection<GameObject> gameObjects = new ArrayList<>();
 
     private ObjetCompose model;
 
@@ -47,10 +53,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.setLookAtM(viewMatrix.getArray(), 0, 0, 0, 10, 0, 0, 0, 0f, 1.0f, 0.0f);
         projectionMatrix.loadPerspective(70.0f, 9.0f / 16.0f, 0.1f, 100.0f);
 
-        model = new ObjetCompose(mContext, "TARDIS/TARDIS.obj", new Shader(mContext, "vertexshader.vert", "fragmentshader.frag"));
+        Shader shader = new Shader(mContext, "vertexshader.vert", "fragmentshader.frag");
+        model = new ObjetCompose(mContext, "TARDIS/TARDIS.obj", shader);
+        gameObjects.add(model);
         model.getTransform().setParent(transform);
-
         model.addComponant(RotationTardis.class);
+
+        ObjetCompose ennemi = new ObjetCompose(mContext, "Boat/OldBoat.obj", shader);
+        ennemi.addComponant(DeplacementEnnemis.class);
+        gameObjects.add(ennemi);
+
     }
 
     @Override
@@ -60,17 +72,26 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         projectionMatrix.loadPerspective(70.0f, (float) width / height, 0.1f, 100.0f);
     }
 
-    private void update(long dt) {
-        model.update(dt);
+    private void update(float dt) {
+        for (Iterator<GameObject> iterator = gameObjects.iterator(); iterator.hasNext(); ) {
+            GameObject next = iterator.next();
+            next.update(dt);
+        }
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        update(System.currentTimeMillis() - lastFrame);
+        update((float) ((System.currentTimeMillis() - lastFrame) / 1000.0));
         lastFrame = System.currentTimeMillis();
         Log.d("Debug", "onDrawFrame");
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
-        model.draw(projectionMatrix, viewMatrix);
+        for (Iterator<GameObject> iterator = gameObjects.iterator(); iterator.hasNext(); ) {
+            GameObject next = iterator.next();
+            if (next instanceof Drawable) {
+                Drawable d = (Drawable) next;
+                d.draw(projectionMatrix, viewMatrix);
+            }
+        }
     }
 
 }
