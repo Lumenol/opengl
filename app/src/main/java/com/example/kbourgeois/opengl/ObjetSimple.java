@@ -8,10 +8,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
-public class ObjetSimple implements Drawable {
+public class ObjetSimple extends GameObject implements Drawable {
 
     private static final int COORDS_PER_VERTEX = 3;
     private static final int COORDS_PER_NORMAL = 3;
@@ -23,7 +21,6 @@ public class ObjetSimple implements Drawable {
 
     private Shader shader = null;
     private Texture texture = new Texture();
-    private Transform transform = new Transform();
     private BoundsSimple bounds;
 
     public boolean haveShader() {
@@ -58,8 +55,8 @@ public class ObjetSimple implements Drawable {
     public ObjetSimple(float[] vertices, float[] normals, float[] uvs, int[] indices, String name) {
 
         bounds = new BoundsSimple(vertices, COORDS_PER_VERTEX, 0);
-        bounds.setParent(transform);
-        transform.setOffset(bounds.getLocalCenter());
+        bounds.setParent(getTransform());
+        getTransform().setOffset(bounds.getLocalCenter());
 
         this.name = name;
         this.vertices = vertices;
@@ -93,11 +90,7 @@ public class ObjetSimple implements Drawable {
 
         bounds = new BoundsSimple(vertices, COORDS_PER_VERTEX, 0);
 
-    }
-
-    @Override
-    public Transform getTransform() {
-        return transform;
+        addComponant(Drawable.class, this);
     }
 
     @Override
@@ -126,7 +119,7 @@ public class ObjetSimple implements Drawable {
 
             // Apply the projection and view transformation.
             GLES30.glUniformMatrix4fv(shader.getUniformLocation("view"), 1, false, view.getArray(), 0);
-            GLES30.glUniformMatrix4fv(shader.getUniformLocation("model"), 1, false, transform.getLocalToWorldMatrix().getArray(), 0);
+            GLES30.glUniformMatrix4fv(shader.getUniformLocation("model"), 1, false, getTransform().getLocalToWorldMatrix().getArray(), 0);
             GLES30.glUniformMatrix4fv(shader.getUniformLocation("projection"), 1, false, projection.getArray(), 0);
 
             GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture.getID());

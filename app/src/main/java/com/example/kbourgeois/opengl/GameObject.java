@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GameObject {
-    private Map<Class, MonoBehaviour> componants = new HashMap<>();
+    private Map<Class, Object> componants = new HashMap<>();
     private List<MonoBehaviour> nouveauxBehaviour = new ArrayList<>();
 
     private Transform transform = new Transform();
@@ -20,7 +20,7 @@ public class GameObject {
         return transform;
     }
 
-    final public MonoBehaviour getComponant(Class<? extends MonoBehaviour> c) {
+    final public Object getComponant(Class c) {
         return componants.get(c);
     }
 
@@ -31,10 +31,21 @@ public class GameObject {
             componants.put(next.getClass(), next);
         }
         nouveauxBehaviour.clear();
-        Collection<MonoBehaviour> values = componants.values();
-        for (Iterator<MonoBehaviour> iterator = values.iterator(); iterator.hasNext(); ) {
-            MonoBehaviour next = iterator.next();
-            next.update(dt);
+        Collection values = componants.values();
+        for (Iterator iterator = values.iterator(); iterator.hasNext(); ) {
+            Object next = iterator.next();
+            if (next instanceof MonoBehaviour) {
+                MonoBehaviour monoBehaviour = (MonoBehaviour) next;
+                monoBehaviour.update(dt);
+            }
+        }
+    }
+
+    final public void addComponant(Class c, Object o) {
+        if (c.isInstance(o)) {
+            componants.put(c, o);
+        } else {
+            throw new ClassCastException(o.getClass().getName() + " n'est pas " + c.getName());
         }
     }
 

@@ -7,6 +7,8 @@ import android.opengl.Matrix;
 import android.renderscript.Matrix4f;
 import android.util.Log;
 
+import com.example.kbourgeois.opengl.FloatK.Float3;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -59,10 +61,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         model.getTransform().setParent(transform);
         model.addComponant(RotationTardis.class);
 
-        ObjetCompose ennemi = new ObjetCompose(mContext, "Boat/OldBoat.obj", shader);
-        ennemi.addComponant(DeplacementEnnemis.class);
-        gameObjects.add(ennemi);
-
+        for (int i = 0; i < 5; i++) {
+            ObjetCompose ennemi = new ObjetCompose(mContext, "Boat/OldBoat.obj", shader);
+            ennemi.addComponant(DeplacementEnnemis.class);
+            gameObjects.add(ennemi);
+            float scale = 0.15f;
+            ennemi.getTransform().setLocalScale(new Float3(scale, scale, scale));
+        }
     }
 
     @Override

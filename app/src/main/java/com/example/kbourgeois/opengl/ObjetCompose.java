@@ -54,6 +54,7 @@ public class ObjetCompose extends GameObject implements Drawable {
             next.getTransform().setOffset(this.bounds.getLocalCenter());
         }
 
+        addComponant(Drawable.class, this);
     }
 
     public ObjetCompose(String name, Collection<? extends Drawable> drawables) {
