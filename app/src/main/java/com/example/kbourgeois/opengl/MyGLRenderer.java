@@ -61,7 +61,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         model.getTransform().setParent(transform);
         model.addComponant(RotationTardis.class);
 
-        for (int i = 0; i < 5; i++) {
+        ObjetCompose skybox = new ObjetCompose(mContext, "Skybox/cube.obj", shader);
+        float skyScale = 100.f;
+        skybox.getTransform().setLocalScale(new Float3(skyScale, skyScale, skyScale));
+        //skybox.getTransform().setParent(getTransform());
+        gameObjects.add(skybox);
+
+
+        for (int i = 0; i < 1; i++) {
             ObjetCompose ennemi = new ObjetCompose(mContext, "Boat/OldBoat.obj", shader);
             ennemi.addComponant(DeplacementEnnemis.class);
             gameObjects.add(ennemi);

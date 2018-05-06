@@ -13,7 +13,7 @@ in vec3 fragPos;
 //uniform vec3 lColor;
 //uniform vec3 cPosition;
 
-float ambientStrength = 0.2;
+float ambientStrength = 1.0;
 float specularStrength = 1.0;
 float diffuseStrength = 1.0;
 
@@ -22,7 +22,7 @@ void main() {
 
 vec3 lPosition = vec3(0, 2, 0);
 vec3 lColor = vec3(1,1,1);
-vec3 cPosition = vec3(0,1, 2);
+vec3 cPosition = vec3(0,10, 0);
   float dist = distance(lPosition, fragPos);
 
   mat3 normalMatrix = transpose(inverse(mat3(modelFrag)));
