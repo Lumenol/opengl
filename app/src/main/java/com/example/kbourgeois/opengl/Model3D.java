@@ -4,6 +4,8 @@ import android.opengl.GLES30;
 import android.renderscript.Matrix4f;
 import android.util.Log;
 
+import com.example.kbourgeois.opengl.FloatK.Float3;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -83,7 +85,7 @@ public class Model3D {
         indicesBuffer.position(0);
     }
 
-    public void draw(Matrix4f projection, Matrix4f view, Matrix4f model) {
+    public void draw(Matrix4f projection, Matrix4f view, Matrix4f model, Float3 pCamera) {
 
         if (haveShader()) {
 
@@ -100,6 +102,11 @@ public class Model3D {
             int normalID = shader.getAttribLocation("vNormal");
             GLES30.glEnableVertexAttribArray(normalID);
             GLES30.glVertexAttribPointer(normalID, 2, GLES30.GL_FLOAT, false, NORMAL_STRIDE, normalsBuffer);
+
+
+            if (pCamera != null) {
+                GLES30.glUniform3fv(shader.getUniformLocation("cPosition"), 1, pCamera.getArray(), 0);
+            }
 
             // Apply the projection and view transformation.
             GLES30.glUniformMatrix4fv(shader.getUniformLocation("view"), 1, false, view.getArray(), 0);

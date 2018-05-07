@@ -7,6 +7,9 @@ import android.opengl.Matrix;
 import android.renderscript.Matrix4f;
 import android.util.Log;
 
+import com.example.kbourgeois.opengl.Camera.Camera;
+import com.example.kbourgeois.opengl.Camera.Orthographic;
+import com.example.kbourgeois.opengl.Camera.Perspective;
 import com.example.kbourgeois.opengl.FloatK.Float3;
 
 import java.util.ArrayList;
@@ -21,8 +24,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private long lastFrame = System.currentTimeMillis();
 
-    private final Matrix4f projectionMatrix = new Matrix4f();
-    private final Matrix4f viewMatrix = new Matrix4f();
+    private Camera camera;
 
     private Context mContext;
 
@@ -52,8 +54,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES30.glEnable(GLES30.GL_DEPTH_TEST);
         GLES30.glDepthFunc(GLES30.GL_LEQUAL);
 
-        Matrix.setLookAtM(viewMatrix.getArray(), 0, 0, 0, 10, 0, 0, 0, 0f, 1.0f, 0.0f);
-        projectionMatrix.loadPerspective(70.0f, 9.0f / 16.0f, 0.1f, 100.0f);
+
+        camera = new Perspective(70.0f, 9.0f / 16.0f, 0.1f, 100.0f);
+        camera.set(new Float3(-5,5, 10), new Float3(0, 0, 0));
+        Log.d("Camera",camera.getTransform().getRotation().toString());
 
         Shader shader = new Shader(mContext, "vertexshader.vert", "fragmentshader.frag");
         model = new ObjetCompose(mContext, "TARDIS/TARDIS.obj", shader);
@@ -81,7 +85,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.d("Debug", "onSurfaceChanged");
         GLES30.glViewport(0, 0, width, height);
-        projectionMatrix.loadPerspective(70.0f, (float) width / height, 0.1f, 100.0f);
+        //projectionMatrix.loadPerspective(70.0f, (float) width / height, 0.1f, 100.0f);
+        if (camera instanceof Perspective) {
+            Perspective p = (Perspective) camera;
+            p.setAspect((float) width / height);
+        }
     }
 
     private void update(float dt) {
@@ -101,7 +109,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             GameObject next = iterator.next();
             if (next instanceof Drawable) {
                 Drawable d = (Drawable) next;
-                d.draw(projectionMatrix, viewMatrix);
+                d.draw(camera);
             }
         }
     }

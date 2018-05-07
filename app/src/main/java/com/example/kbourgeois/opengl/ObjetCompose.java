@@ -3,6 +3,8 @@ package com.example.kbourgeois.opengl;
 import android.content.Context;
 import android.renderscript.Matrix4f;
 
+import com.example.kbourgeois.opengl.Camera.Camera;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,10 +80,10 @@ public class ObjetCompose extends GameObject implements Drawable, Cloneable {
     }
 
     @Override
-    public void draw(Matrix4f projection, Matrix4f view) {
+    public void draw(Camera camera) {
         for (Iterator<Drawable> drawableIterator = drawables.iterator(); drawableIterator.hasNext(); ) {
             Drawable next = drawableIterator.next();
-            next.draw(projection, view);
+            next.draw(camera);
         }
     }
 

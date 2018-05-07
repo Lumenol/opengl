@@ -2,6 +2,8 @@ package com.example.kbourgeois.opengl;
 
 import android.renderscript.Matrix4f;
 
+import com.example.kbourgeois.opengl.Camera.Camera;
+
 public interface Drawable{
 
     String getName();
@@ -12,6 +14,6 @@ public interface Drawable{
 
     Drawable clone();
 
-    void draw(Matrix4f projection, Matrix4f view);
+    void draw(Camera camera);
 
 }

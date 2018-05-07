@@ -1,6 +1,6 @@
 package com.example.kbourgeois.opengl;
 
-import android.renderscript.Matrix4f;
+import com.example.kbourgeois.opengl.Camera.Camera;
 
 public class ObjetSimple extends GameObject implements Drawable {
 
@@ -36,7 +36,7 @@ public class ObjetSimple extends GameObject implements Drawable {
     }
 
     @Override
-    public void draw(Matrix4f projection, Matrix4f view) {
-        model3D.draw(projection, view, getTransform().getLocalToWorldMatrix());
+    public void draw(Camera camera) {
+        model3D.draw(camera.getProjection(), camera.getView(), getTransform().getLocalToWorldMatrix(), camera.getTransform().getPosition());
     }
 }
