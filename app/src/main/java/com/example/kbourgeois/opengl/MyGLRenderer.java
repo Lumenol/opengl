@@ -68,7 +68,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         gameObjects.add(skybox);
 
         ObjetCompose ennemi = new ObjetCompose(mContext, "Boat/OldBoat.obj", shader);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             ObjetCompose clone = (ObjetCompose) ennemi.clone();
             clone.addComponant(DeplacementEnnemis.class);
             gameObjects.add(clone);
