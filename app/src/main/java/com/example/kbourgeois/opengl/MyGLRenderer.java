@@ -64,16 +64,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         ObjetCompose skybox = new ObjetCompose(mContext, "Skybox/cube.obj", shader);
         float skyScale = 100.f;
         skybox.getTransform().setLocalScale(new Float3(skyScale, skyScale, skyScale));
-        //skybox.getTransform().setParent(getTransform());
+        //skybox.getTransform().setParent(getTransform()); // Pour pouvoir faire tourner la boite et regarder partout
         gameObjects.add(skybox);
 
-
-        for (int i = 0; i < 1; i++) {
-            ObjetCompose ennemi = new ObjetCompose(mContext, "Boat/OldBoat.obj", shader);
-            ennemi.addComponant(DeplacementEnnemis.class);
-            gameObjects.add(ennemi);
+        ObjetCompose ennemi = new ObjetCompose(mContext, "Boat/OldBoat.obj", shader);
+        for (int i = 0; i < 100; i++) {
+            ObjetCompose clone = (ObjetCompose) ennemi.clone();
+            clone.addComponant(DeplacementEnnemis.class);
+            gameObjects.add(clone);
             float scale = 0.15f;
-            ennemi.getTransform().setLocalScale(new Float3(scale, scale, scale));
+            clone.getTransform().setLocalScale(new Float3(scale, scale, scale));
         }
     }
 

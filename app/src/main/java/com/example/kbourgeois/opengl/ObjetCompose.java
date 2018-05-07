@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ObjetCompose extends GameObject implements Drawable {
+public class ObjetCompose extends GameObject implements Drawable, Cloneable {
 
     private Map<Object, Object> attributs = new HashMap<>();
 
@@ -19,6 +19,13 @@ public class ObjetCompose extends GameObject implements Drawable {
 
     private List<Drawable> drawables = new ArrayList<>();
 
+    public ObjetCompose(ObjetCompose compose) {
+        name = compose.name;
+        for (Drawable drawable : compose.drawables) {
+            drawables.add(drawable.clone());
+        }
+        init();
+    }
 
     private String name = "";
 
@@ -30,16 +37,17 @@ public class ObjetCompose extends GameObject implements Drawable {
     public ObjetCompose(Context context, String filename, Shader shader) {
         File file = new File(filename);
         name = file.getName();
-        Map<String, ObjetSimple> drawables = ModelLoader.readOBJFile(context, filename, shader);
-        init(drawables.values());
+        Map<String, Model3D> drawables = ModelLoader.readOBJFile(context, filename, shader);
+        for (Model3D model3D : drawables.values()) {
+            this.drawables.add(new ObjetSimple(model3D));
+        }
+        init();
     }
 
-    private void init(Collection<? extends Drawable> drawables) {
-        this.drawables.addAll(drawables);
+    private void init() {
         List<Bounds> bounds = new ArrayList<>();
         for (Iterator<? extends Drawable> iterator = drawables.iterator(); iterator.hasNext(); ) {
             Drawable next = iterator.next();
-
             bounds.add(next.getBounds());
             next.getTransform().setParent(getTransform());
         }
@@ -59,7 +67,8 @@ public class ObjetCompose extends GameObject implements Drawable {
 
     public ObjetCompose(String name, Collection<? extends Drawable> drawables) {
         this.name = name;
-        init(drawables);
+        this.drawables.addAll(drawables);
+        init();
     }
 
 
@@ -76,4 +85,8 @@ public class ObjetCompose extends GameObject implements Drawable {
         }
     }
 
+    @Override
+    public Drawable clone() {
+        return new ObjetCompose(this);
+    }
 }

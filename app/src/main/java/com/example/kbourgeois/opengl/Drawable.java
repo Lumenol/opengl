@@ -2,15 +2,15 @@ package com.example.kbourgeois.opengl;
 
 import android.renderscript.Matrix4f;
 
-import java.util.Map;
-
-public interface Drawable {
+public interface Drawable{
 
     String getName();
 
     Transform getTransform();
 
     Bounds getBounds();
+
+    Drawable clone();
 
     void draw(Matrix4f projection, Matrix4f view);
 

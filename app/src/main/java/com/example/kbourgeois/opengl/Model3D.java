@@ -9,199 +9,118 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public class Model3D  {
+public class Model3D {
 
-    private int mVertexID;
-    private int mTexID;
-    private int mNormalID;
-
-    private int mProgram;
-
-    private float mVertices[];
-    private float mNormals[];
-    private float mUV[];
-    private int mIndices[];
-
-
-    private FloatBuffer mVertexBuffer;
-    private IntBuffer mIndexBuffer;
-    private FloatBuffer mTexBuffer;
-    private FloatBuffer mNormalBuffer;
-
-
-    private static final int COORDS_PER_VERTEX = 3;
-    private static final int COORDS_PER_NORMAL = 3;
-    private static final int COORDS_PER_TEX = 2;
+    public static final int COORDS_PER_VERTEX = 3;
+    public static final int COORDS_PER_NORMAL = 3;
+    public static final int COORDS_PER_TEX = 2;
 
     private final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
     private final int TEX_STRIDE = COORDS_PER_TEX * 4;
     private final int NORMAL_STRIDE = COORDS_PER_NORMAL * 4;
-    private int mVertexShaderID;
-    private int mFragShaderID;
-    private int mIdViewMatrix;
-    private int mIdProjMatrix;
-    private int mIdModelMatrix;
 
-    private Transform transform = new Transform();
+    private Shader shader = null;
+    private Texture texture = new Texture();
+    private Bounds bounds;
 
-    private Texture mTexture;
+    private int[] indices;
 
-    private BoundsSimple bounds;
+    public boolean haveShader() {
+        return shader != null;
+    }
 
-    private String name;
+    String name = "";
 
     public String getName() {
         return name;
     }
 
-    Model3D(float[] vertices, float[] normals, float[] uvs, int[] indices) {
-        this(vertices, normals, uvs, indices, "");
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 
-    public BoundsSimple getBounds() {
+    private FloatBuffer verticesBuffer;
+    private FloatBuffer normalsBuffer;
+    private FloatBuffer uvsBuffer;
+    private IntBuffer indicesBuffer;
+
+    public void setShader(Shader shader) {
+        this.shader = shader;
+    }
+
+    public Bounds getBounds() {
         return bounds;
     }
 
-    public void draw(Matrix4f projection, Matrix4f view) {
-        draw(projection.getArray(), view.getArray());
-    }
-
-    Model3D(float[] vertices, float[] normals, float[] uvs, int[] indices, String name) {
-
+    public Model3D(float[] vertices, float[] normals, float[] uvs, int[] indices, String name) {
+        bounds = new BoundsSimple(vertices, COORDS_PER_VERTEX, 0);
         this.name = name;
 
-        bounds = new BoundsSimple(vertices, COORDS_PER_VERTEX, 0);
-        //transform.setOffset(bounds.getLocalCenter());
+        this.indices = indices;
 
-        mVertices = vertices;
-        mNormals = normals;
-        mUV = uvs;
-        mIndices = indices;
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(vertices.length * Float.SIZE);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        verticesBuffer = byteBuffer.asFloatBuffer();
+        verticesBuffer.put(vertices);
+        verticesBuffer.position(0);
 
-        ByteBuffer byteBuf = ByteBuffer.allocateDirect(mVertices.length * 4);
+        byteBuffer = ByteBuffer.allocateDirect(normals.length * Float.SIZE);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        normalsBuffer = byteBuffer.asFloatBuffer();
+        normalsBuffer.put(normals);
+        normalsBuffer.position(0);
 
-        byteBuf.order(ByteOrder.nativeOrder());
-        mVertexBuffer = byteBuf.asFloatBuffer();
-        mVertexBuffer.put(mVertices);
-        mVertexBuffer.position(0);
+        byteBuffer = ByteBuffer.allocateDirect(uvs.length * Float.SIZE);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        uvsBuffer = byteBuffer.asFloatBuffer();
+        uvsBuffer.put(uvs);
+        uvsBuffer.position(0);
 
-        byteBuf = ByteBuffer.allocateDirect(mNormals.length * 4);
-        byteBuf.order(ByteOrder.nativeOrder());
-        mNormalBuffer = byteBuf.asFloatBuffer();
-        mNormalBuffer.put(mNormals);
-        mNormalBuffer.position(0);
-
-        byteBuf = ByteBuffer.allocateDirect(mUV.length * 4);
-        byteBuf.order(ByteOrder.nativeOrder());
-        mTexBuffer = byteBuf.asFloatBuffer();
-        mTexBuffer.put(mUV);
-        mTexBuffer.position(0);
-
-        byteBuf = ByteBuffer.allocateDirect(mIndices.length * 4);
-        byteBuf.order(ByteOrder.nativeOrder());
-        mIndexBuffer = byteBuf.asIntBuffer();
-        mIndexBuffer.put(mIndices);
-        mIndexBuffer.position(0);
-
+        byteBuffer = ByteBuffer.allocateDirect(indices.length * Float.SIZE);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        indicesBuffer = byteBuffer.asIntBuffer();
+        indicesBuffer.put(indices);
+        indicesBuffer.position(0);
     }
 
-    public Texture getmTexture() {
-        return mTexture;
-    }
+    public void draw(Matrix4f projection, Matrix4f view, Matrix4f model) {
 
-    public void setmTexture(Texture mTexture) {
-        this.mTexture = mTexture;
-    }
+        if (haveShader()) {
 
-    void init(String vertexShader, String fragmentShader, String vertexLoc,
-              String normalLoc, String texLoc) {
+            GLES30.glUseProgram(shader.getProgramID());
 
-        mProgram = GLES30.glCreateProgram();
+            int vertexID = shader.getAttribLocation("vPosition");
+            GLES30.glEnableVertexAttribArray(vertexID);
+            GLES30.glVertexAttribPointer(vertexID, 3, GLES30.GL_FLOAT, false, VERTEX_STRIDE, verticesBuffer);
 
-        mVertexShaderID = ShaderUtilities.loadShader(GLES30.GL_VERTEX_SHADER, vertexShader);
-        mFragShaderID = ShaderUtilities.loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentShader);
-        GLES30.glAttachShader(mProgram, mVertexShaderID);
-        GLES30.glAttachShader(mProgram, mFragShaderID);
-        GLES30.glLinkProgram(mProgram);
-        int[] linkStatus = {0};
-        GLES30.glGetProgramiv(mProgram, GLES30.GL_LINK_STATUS, linkStatus, 0);
+            int texID = shader.getAttribLocation("vTexCoord");
+            GLES30.glEnableVertexAttribArray(texID);
+            GLES30.glVertexAttribPointer(texID, 2, GLES30.GL_FLOAT, false, TEX_STRIDE, uvsBuffer);
 
-        mVertexID = GLES30.glGetAttribLocation(mProgram, vertexLoc);
-        mNormalID = GLES30.glGetAttribLocation(mProgram, normalLoc);
-        mTexID = GLES30.glGetAttribLocation(mProgram, texLoc);
+            int normalID = shader.getAttribLocation("vNormal");
+            GLES30.glEnableVertexAttribArray(normalID);
+            GLES30.glVertexAttribPointer(normalID, 2, GLES30.GL_FLOAT, false, NORMAL_STRIDE, normalsBuffer);
 
-        mIdProjMatrix = GLES30.glGetUniformLocation(mProgram, "projection");
-        mIdViewMatrix = GLES30.glGetUniformLocation(mProgram, "view");
-        mIdModelMatrix = GLES30.glGetUniformLocation(mProgram, "model");
+            // Apply the projection and view transformation.
+            GLES30.glUniformMatrix4fv(shader.getUniformLocation("view"), 1, false, view.getArray(), 0);
+            GLES30.glUniformMatrix4fv(shader.getUniformLocation("model"), 1, false, model.getArray(), 0);
+            GLES30.glUniformMatrix4fv(shader.getUniformLocation("projection"), 1, false, projection.getArray(), 0);
 
-        Log.d("MODEL 3D", "init: mVertexID :" + mVertexID);
-    }
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture.getID());
 
-    public Transform getTransform() {
-        return transform;
-    }
+            GLES30.glDrawElements(GLES30.GL_TRIANGLES, indices.length, GLES30.GL_UNSIGNED_INT, indicesBuffer);
 
-    void draw(float[] projection, float[] view) {
-        GLES30.glUseProgram(mProgram);
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
 
-        GLES30.glEnableVertexAttribArray(mVertexID);
-        GLES30.glVertexAttribPointer(
-                mVertexID, 3, GLES30.GL_FLOAT, false, VERTEX_STRIDE, mVertexBuffer);
+            GLES30.glDisableVertexAttribArray(vertexID);
+            GLES30.glDisableVertexAttribArray(texID);
+            GLES30.glDisableVertexAttribArray(normalID);
 
-        GLES30.glEnableVertexAttribArray(mTexID);
-        GLES30.glVertexAttribPointer(
-                mTexID, 2, GLES30.GL_FLOAT, false, TEX_STRIDE, mTexBuffer);
+            GLES30.glUseProgram(0);
 
-        GLES30.glEnableVertexAttribArray(mNormalID);
-        GLES30.glVertexAttribPointer(
-                mNormalID, 2, GLES30.GL_FLOAT, false, NORMAL_STRIDE, mNormalBuffer);
+        } else {
+            Log.w("Draw", "Il n'y a pas de shader.");
+        }
 
-        // Apply the projection and view transformation.
-        GLES30.glUniformMatrix4fv(mIdViewMatrix, 1, false, view, 0);
-        GLES30.glUniformMatrix4fv(mIdModelMatrix, 1, false, transform.getLocalToWorldMatrix().getArray(), 0);
-        GLES30.glUniformMatrix4fv(mIdProjMatrix, 1, false, projection, 0);
-
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTexture.getID());
-
-        GLES30.glDrawElements(
-                GLES30.GL_TRIANGLES, mIndices.length, GLES30.GL_UNSIGNED_INT, mIndexBuffer);
-
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
-
-
-        GLES30.glDisableVertexAttribArray(mVertexID);
-        GLES30.glDisableVertexAttribArray(mTexID);
-        GLES30.glDisableVertexAttribArray(mNormalID);
-
-        GLES30.glUseProgram(0);
-
-    }
-
-    void clean() {
-        GLES30.glDetachShader(mProgram, mVertexShaderID);
-        GLES30.glDetachShader(mProgram, mFragShaderID);
-        GLES30.glDeleteProgram(mProgram);
-    }
-
-    public int[] getmIndices() {
-        return mIndices;
-    }
-
-    public float[] getmNormals() {
-        return mNormals;
-    }
-
-    public float[] getmUV() {
-        return mUV;
-    }
-
-    public float[] getmVertices() {
-        return mVertices;
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        clean();
-        super.finalize();
     }
 }

@@ -11,7 +11,7 @@ import java.util.Vector;
 
 public class ModelLoader {
 
-    private static ObjetSimple makeModel(Vector<Float> vertices_tmp, Vector<Float> normals_tmp, Vector<Float> UVs_tmp, Vector<Integer> verticesIndex, Vector<Integer> normalsIndex, Vector<Integer> UVsIndex, String name) {
+    private static Model3D makeModel(Vector<Float> vertices_tmp, Vector<Float> normals_tmp, Vector<Float> UVs_tmp, Vector<Integer> verticesIndex, Vector<Integer> normalsIndex, Vector<Integer> UVsIndex, String name) {
         float[] vertices = new float[verticesIndex.size() * 3];
         float[] UVs = new float[UVsIndex.size() * 2];
         float[] normals = new float[normalsIndex.size() * 3];
@@ -32,18 +32,18 @@ public class ModelLoader {
             indices[i] = i;
         }
         if (indices.length > 0) {
-            return new ObjetSimple(vertices, normals, UVs, indices, name);
+            return new Model3D(vertices, normals, UVs, indices, name);
         } else {
             return null;
         }
     }
 
-    public static Map<String, ObjetSimple> readOBJFile(final Context c, final String filename) {
+    public static Map<String, Model3D> readOBJFile(final Context c, final String filename) {
         return readOBJFile(c, filename, null);
     }
 
-    public static Map<String, ObjetSimple> readOBJFile(final Context c, final String filename, Shader shader) {
-        Map<String, ObjetSimple> model3DS = new HashMap<>();
+    public static Map<String, Model3D> readOBJFile(final Context c, final String filename, Shader shader) {
+        Map<String, Model3D> model3DS = new HashMap<>();
 
         Map<String, Materiel> materiels = new HashMap<>();
 
@@ -129,7 +129,7 @@ public class ModelLoader {
                 if (cpt > 0) {
                     name1 = name2;
                 }
-                ObjetSimple model3D = makeModel(vertices_tmp, normals_tmp, UVs_tmp, verticesIndex, normalsIndex, UVsIndex, name1);
+                Model3D model3D = makeModel(vertices_tmp, normals_tmp, UVs_tmp, verticesIndex, normalsIndex, UVsIndex, name1);
                 if (model3D != null) {
                     Materiel mtl = materiels.get(materiel);
                     if (mtl != null) {
