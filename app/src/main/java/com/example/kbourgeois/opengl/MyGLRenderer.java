@@ -56,7 +56,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
         camera = new Perspective(70.0f, 9.0f / 16.0f, 0.1f, 100.0f);
-        camera.set(new Float3(-5,5, 10), new Float3(0, 0, 0));
+        //camera = new Orthographic(-10,10,-10,10,0.1f,100f);
+        camera.set(new Float3(0,0, 10), new Float3(0, 0, 0));
         Log.d("Camera",camera.getTransform().getRotation().toString());
 
         Shader shader = new Shader(mContext, "vertexshader.vert", "fragmentshader.frag");

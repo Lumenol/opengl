@@ -8,7 +8,7 @@ public class Orthographic extends Camera {
 
     private float left=-10, right=10;
     private float bottom=-10, top=10;
-    private float near=0.1f, far=10;
+    private float near=0.1f, far=100;
 
     public Orthographic() {
     }
