@@ -16,7 +16,7 @@ public class RotationTardis extends MonoBehaviour {
 
     @Override
     public void update(float dt) {
-        angleBalancement += (dt * 90f / 60) % (2 * Math.PI);
+        angleBalancement = (float) ((angleBalancement + (dt * 90f / 60)) % (2 * Math.PI));
 
         Transform modelTransform = getGameObject().getTransform();
         Float3 localRotation = modelTransform.getLocalRotation();
