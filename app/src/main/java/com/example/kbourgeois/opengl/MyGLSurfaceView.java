@@ -14,7 +14,7 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
     private final float TOUCH_SCALE_FACTOR = 0.01f;
 
     private float mScale = 1;
-    private DetectorMove mDetectorMoveDoubleTap = new DetectorMove();
+    private MoveDetector mMoveDetectorDoubleTap = new MoveDetector();
 
 
     private GestureDetectorCompat mGestureDetectorCompat;
@@ -152,10 +152,10 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
 
     @Override
     public boolean onDoubleTapEvent(MotionEvent e) {
-        mDetectorMoveDoubleTap.onTouchEvent(e);
-        if (mDetectorMoveDoubleTap.hasMouvement()) {
-            float distanceX = mDetectorMoveDoubleTap.getP2().getX() - mDetectorMoveDoubleTap.getP1().getX();
-            float distanceY = mDetectorMoveDoubleTap.getP1().getY() - mDetectorMoveDoubleTap.getP2().getY();
+        mMoveDetectorDoubleTap.onTouchEvent(e);
+        if (mMoveDetectorDoubleTap.hasMouvement()) {
+            float distanceX = mMoveDetectorDoubleTap.getP2().getX() - mMoveDetectorDoubleTap.getP1().getX();
+            float distanceY = mMoveDetectorDoubleTap.getP1().getY() - mMoveDetectorDoubleTap.getP2().getY();
             Log.d(Thread.currentThread().getStackTrace()[2].getMethodName(), "dX : " + distanceX + " dY " + distanceY);
             Transform transform = myRenderer.getTransform();
             Float3 translate = transform.getPosition();

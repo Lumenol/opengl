@@ -4,11 +4,11 @@ import android.view.MotionEvent;
 
 import com.example.kbourgeois.opengl.FloatK.Float2;
 
-public class DetectorMove {
+public class MoveDetector {
 
     private Float2 p1, p2;
 
-    public DetectorMove() {
+    public MoveDetector() {
         p1 = new Float2(0, 0);
         p2 = new Float2(0, 0);
     }
