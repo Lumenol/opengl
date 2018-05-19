@@ -62,13 +62,24 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         Shader shader = new Shader(mContext, "vertexshader.vert", "fragmentshader.frag");
         model = new ObjetCompose(mContext, "TARDIS/TARDIS.obj", shader);
-        gameObjects.add(model);
-        model.getTransform().setParent(transform);
-        model.addComponant(RotationTardis.class);
+
+        {
+            float scale = 0.5f;
+            model.getTransform().setLocalScale(new Float3(scale,scale,scale));
+            model.getTransform().setPosition(new Float3(0,0,-5));
+            gameObjects.add(model);
+            model.getTransform().setParent(transform);
+            model.addComponant(RotationTardis.class);
+        }
 
         ObjetCompose skybox = new ObjetCompose(mContext, "Skybox/cube.obj", shader);
-        float skyScale = 100.f;
-        skybox.getTransform().setLocalScale(new Float3(skyScale, skyScale, skyScale));
+        {
+            float skyScale = 100.f;
+            Transform transform = skybox.getTransform();
+            transform.setLocalScale(new Float3(skyScale, skyScale, skyScale));
+            transform.setLocalRotation(new Float3(0, 90, 0));
+            ((RotationSkyBox) skybox.addComponant(RotationSkyBox.class)).vitesse=200f/60;
+        }
         //skybox.getTransform().setParent(getTransform()); // Pour pouvoir faire tourner la boite et regarder partout
         gameObjects.add(skybox);
 
