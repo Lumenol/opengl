@@ -17,8 +17,8 @@ public class DeplacementEnnemis extends MonoBehaviour {
 
     private void reset() {
         Random random = new Random();
-        float x = (2*random.nextFloat()-1) * 5;
-        float y = (2*random.nextFloat()-1) * 5;
+        float x = (2*random.nextFloat()-1) * 20;
+        float y = (2*random.nextFloat()-1) * 20;
         float z = 50 + (2*random.nextFloat()-1) * 50;
 
         getGameObject().getTransform().setPosition(new Float3(x, y, -(50f + z)));

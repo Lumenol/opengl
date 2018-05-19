@@ -83,8 +83,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //skybox.getTransform().setParent(getTransform()); // Pour pouvoir faire tourner la boite et regarder partout
         gameObjects.add(skybox);
 
-        ObjetCompose ennemi = new ObjetCompose(mContext, "Boat/OldBoat.obj", shader);
-        for (int i = 0; i < 10; i++) {
+        ObjetCompose ennemi = new ObjetCompose(mContext, "Rock/rock.obj", shader);
+        for (int i = 0; i < 50; i++) {
             ObjetCompose clone = (ObjetCompose) ennemi.clone();
             clone.addComponant(DeplacementEnnemis.class);
             gameObjects.add(clone);
