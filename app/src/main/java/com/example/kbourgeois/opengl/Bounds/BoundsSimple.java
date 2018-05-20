@@ -1,10 +1,11 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.Bounds;
 
 import android.opengl.Matrix;
 import android.renderscript.Matrix4f;
 
 import com.example.kbourgeois.opengl.FloatK.Float3;
 import com.example.kbourgeois.opengl.FloatK.Float4;
+import com.example.kbourgeois.opengl.GameObect.Transform;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -31,14 +32,6 @@ public class BoundsSimple extends Observable implements Observer, Bounds {
         update();
     }
 
-    public Float3 getLocalMin() {
-        return new Float3(localMin);
-    }
-
-    public Float3 getLocalMax() {
-        return new Float3(localMax);
-    }
-
     public BoundsSimple(float vertices[], int coords_per_vertex, int shift) {
         localMin.set(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
         localMax.set(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
@@ -52,6 +45,14 @@ public class BoundsSimple extends Observable implements Observer, Bounds {
         calculPointsExterieur();
         calculLocalCenter();
         update();
+    }
+
+    public Float3 getLocalMin() {
+        return new Float3(localMin);
+    }
+
+    public Float3 getLocalMax() {
+        return new Float3(localMax);
     }
 
     private void calculLocalCenter() {

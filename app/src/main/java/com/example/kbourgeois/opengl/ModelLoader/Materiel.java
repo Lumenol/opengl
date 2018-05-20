@@ -1,4 +1,4 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.ModelLoader;
 
 
 import java.io.InputStream;
@@ -7,6 +7,12 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Materiel {
+
+    private String name;
+    private double Ns, Ni, d;
+    private int Ka, Kd, Ks;
+    private int illum;
+    private String map_Kd;
 
     public static Map<String, Materiel> readMateriel(InputStream is) {
 
@@ -87,23 +93,8 @@ public class Materiel {
 
     }
 
-
-    private String name;
-    private double Ns, Ni, d;
-    private int Ka, Kd, Ks;
-    private int illum;
-    private String map_Kd;
-
     private static int colorConverter(float a, float r, float g, float b) {
         return (255 & 0xff) << 24 | ((int) (r * 255) & 0xff) << 16 | ((int) (g * 255) & 0xff) << 8 | ((int) (b * 255) & 0xff);
-    }
-
-    public void setIllum(int illum) {
-        this.illum = illum;
-    }
-
-    public void setMap_Kd(String map_Kd) {
-        this.map_Kd = map_Kd;
     }
 
     public String getName() {
@@ -138,7 +129,15 @@ public class Materiel {
         return illum;
     }
 
+    public void setIllum(int illum) {
+        this.illum = illum;
+    }
+
     public String getMap_Kd() {
         return map_Kd;
+    }
+
+    public void setMap_Kd(String map_Kd) {
+        this.map_Kd = map_Kd;
     }
 }

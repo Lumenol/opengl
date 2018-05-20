@@ -6,11 +6,20 @@ public class Orthographic extends Camera {
 
     private boolean needUpdate = true;
 
-    private float left=-10, right=10;
-    private float bottom=-10, top=10;
-    private float near=0.1f, far=100;
+    private float left = -10, right = 10;
+    private float bottom = -10, top = 10;
+    private float near = 0.1f, far = 100;
 
     public Orthographic() {
+    }
+
+    public Orthographic(float left, float right, float bottom, float top, float near, float far) {
+        this.left = left;
+        this.right = right;
+        this.bottom = bottom;
+        this.top = top;
+        this.near = near;
+        this.far = far;
     }
 
     private void update() {
@@ -24,15 +33,6 @@ public class Orthographic extends Camera {
     public Matrix4f getProjection() {
         update();
         return super.getProjection();
-    }
-
-    public Orthographic(float left, float right, float bottom, float top, float near, float far) {
-        this.left = left;
-        this.right = right;
-        this.bottom = bottom;
-        this.top = top;
-        this.near = near;
-        this.far = far;
     }
 
     public float getLeft() {

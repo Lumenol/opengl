@@ -1,7 +1,11 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.ModelLoader;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.example.kbourgeois.opengl.GameObect.Model3D;
+import com.example.kbourgeois.opengl.GameObect.Shader;
+import com.example.kbourgeois.opengl.GameObect.Texture;
 
 import java.io.IOException;
 import java.io.InputStream;

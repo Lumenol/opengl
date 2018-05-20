@@ -1,4 +1,4 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.Activity;
 
 import android.opengl.GLSurfaceView;
 import android.support.v4.view.GestureDetectorCompat;
@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.example.kbourgeois.opengl.FloatK.Float3;
+import com.example.kbourgeois.opengl.GameObect.Transform;
 
 class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener, GestureDetector.OnDoubleTapListener {
     private final MyGLRenderer myRenderer;
@@ -20,18 +21,6 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
     private GestureDetectorCompat mGestureDetectorCompat;
     private ScaleGestureDetector mScaleGestureDetector;
 
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-
-        boolean r = mScaleGestureDetector.onTouchEvent(event);
-        r = mGestureDetectorCompat.onTouchEvent(event) || r;
-        if (r) {
-            requestRender();
-        }
-        return r;
-    }
 
     public MyGLSurfaceView(OpenGLActivity mainActivity) {
         super(mainActivity);
@@ -54,6 +43,17 @@ class MyGLSurfaceView extends GLSurfaceView implements GestureDetector.OnGesture
         mGestureDetectorCompat.setIsLongpressEnabled(false);
         mScaleGestureDetector = new ScaleGestureDetector(mainActivity, this);
         mScaleGestureDetector.setQuickScaleEnabled(false);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        boolean r = mScaleGestureDetector.onTouchEvent(event);
+        r = mGestureDetectorCompat.onTouchEvent(event) || r;
+        if (r) {
+            requestRender();
+        }
+        return r;
     }
 
     @Override

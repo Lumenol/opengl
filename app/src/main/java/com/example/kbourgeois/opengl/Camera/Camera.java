@@ -5,20 +5,18 @@ import android.renderscript.Matrix4f;
 
 import com.example.kbourgeois.opengl.FloatK.Float3;
 import com.example.kbourgeois.opengl.FloatK.Float4;
-import com.example.kbourgeois.opengl.Transform;
+import com.example.kbourgeois.opengl.GameObect.Transform;
 
 import java.util.Observable;
 import java.util.Observer;
 
 public abstract class Camera implements Observer {
+    protected Matrix4f projection = new Matrix4f();
     private Float4 eye = new Float4(0, 0, 0, 1);
     private Float4 center = new Float4(0, 0, 1, 1);
     private Float4 up = new Float4(0, 1, 0, 1);
-
     private Transform transform = new Transform();
     private Matrix4f view = new Matrix4f();
-    protected Matrix4f projection = new Matrix4f();
-
     private boolean needUpdate = true;
 
     public Camera() {
@@ -58,8 +56,8 @@ public abstract class Camera implements Observer {
     public void set(Float3 eye, Float3 center) {
         transform.setPosition(eye);
 
-        float angleY = angleEntre(-1,0, eye.getZ()-center.getZ(), eye.getX()-center.getX());
-        float angleX = angleEntre(  eye.getZ()-center.getZ(), eye.getY()-center.getY(),1,0);
+        float angleY = angleEntre(-1, 0, eye.getZ() - center.getZ(), eye.getX() - center.getX());
+        float angleX = angleEntre(eye.getZ() - center.getZ(), eye.getY() - center.getY(), 1, 0);
 
         Float3 rotation = transform.getRotation();
         rotation.set(angleX, angleY);

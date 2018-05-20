@@ -1,10 +1,9 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.GameObect;
 
-import android.renderscript.Matrix4f;
-
+import com.example.kbourgeois.opengl.Bounds.Bounds;
 import com.example.kbourgeois.opengl.Camera.Camera;
 
-public interface Drawable{
+public interface Drawable {
 
     String getName();
 

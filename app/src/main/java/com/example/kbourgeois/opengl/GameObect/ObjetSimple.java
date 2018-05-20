@@ -1,5 +1,7 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.GameObect;
 
+import com.example.kbourgeois.opengl.Bounds.Bounds;
+import com.example.kbourgeois.opengl.Bounds.BoundsSimple;
 import com.example.kbourgeois.opengl.Camera.Camera;
 
 public class ObjetSimple extends GameObject implements Drawable {
@@ -11,11 +13,6 @@ public class ObjetSimple extends GameObject implements Drawable {
         this(simple.model3D);
     }
 
-    @Override
-    public Drawable clone() {
-        return new ObjetSimple(this);
-    }
-
     public ObjetSimple(Model3D model3D) {
         this.model3D = model3D;
         Bounds model3DBounds = model3D.getBounds();
@@ -23,6 +20,11 @@ public class ObjetSimple extends GameObject implements Drawable {
         this.bounds.setParent(getTransform());
         getTransform().setOffset(this.bounds.getLocalCenter());
         addComponant(Drawable.class, this);
+    }
+
+    @Override
+    public Drawable clone() {
+        return new ObjetSimple(this);
     }
 
     @Override

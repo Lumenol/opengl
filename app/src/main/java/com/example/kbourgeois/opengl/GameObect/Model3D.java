@@ -1,9 +1,11 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.GameObect;
 
 import android.opengl.GLES30;
 import android.renderscript.Matrix4f;
 import android.util.Log;
 
+import com.example.kbourgeois.opengl.Bounds.Bounds;
+import com.example.kbourgeois.opengl.Bounds.BoundsSimple;
 import com.example.kbourgeois.opengl.FloatK.Float3;
 
 import java.nio.ByteBuffer;
@@ -20,39 +22,15 @@ public class Model3D {
     private final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
     private final int TEX_STRIDE = COORDS_PER_TEX * 4;
     private final int NORMAL_STRIDE = COORDS_PER_NORMAL * 4;
-
+    String name = "";
     private Shader shader = null;
     private Texture texture = new Texture();
     private Bounds bounds;
-
     private int[] indices;
-
-    public boolean haveShader() {
-        return shader != null;
-    }
-
-    String name = "";
-
-    public String getName() {
-        return name;
-    }
-
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-    }
-
     private FloatBuffer verticesBuffer;
     private FloatBuffer normalsBuffer;
     private FloatBuffer uvsBuffer;
     private IntBuffer indicesBuffer;
-
-    public void setShader(Shader shader) {
-        this.shader = shader;
-    }
-
-    public Bounds getBounds() {
-        return bounds;
-    }
 
     public Model3D(float[] vertices, float[] normals, float[] uvs, int[] indices, String name) {
         bounds = new BoundsSimple(vertices, COORDS_PER_VERTEX, 0);
@@ -83,6 +61,26 @@ public class Model3D {
         indicesBuffer = byteBuffer.asIntBuffer();
         indicesBuffer.put(indices);
         indicesBuffer.position(0);
+    }
+
+    public boolean haveShader() {
+        return shader != null;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    public void setShader(Shader shader) {
+        this.shader = shader;
+    }
+
+    public Bounds getBounds() {
+        return bounds;
     }
 
     public void draw(Matrix4f projection, Matrix4f view, Matrix4f model, Float3 pCamera) {

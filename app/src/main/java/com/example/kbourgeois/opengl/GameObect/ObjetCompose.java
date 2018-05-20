@@ -1,9 +1,11 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.GameObect;
 
 import android.content.Context;
-import android.renderscript.Matrix4f;
 
+import com.example.kbourgeois.opengl.Bounds.Bounds;
+import com.example.kbourgeois.opengl.Bounds.BoundsCompose;
 import com.example.kbourgeois.opengl.Camera.Camera;
+import com.example.kbourgeois.opengl.ModelLoader.ModelLoader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class ObjetCompose extends GameObject implements Drawable, Cloneable {
     private Bounds bounds;
 
     private List<Drawable> drawables = new ArrayList<>();
+    private String name = "";
 
     public ObjetCompose(ObjetCompose compose) {
         name = compose.name;
@@ -27,13 +30,6 @@ public class ObjetCompose extends GameObject implements Drawable, Cloneable {
             drawables.add(drawable.clone());
         }
         init();
-    }
-
-    private String name = "";
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     public ObjetCompose(Context context, String filename, Shader shader) {
@@ -44,6 +40,17 @@ public class ObjetCompose extends GameObject implements Drawable, Cloneable {
             this.drawables.add(new ObjetSimple(model3D));
         }
         init();
+    }
+
+    public ObjetCompose(String name, Collection<? extends Drawable> drawables) {
+        this.name = name;
+        this.drawables.addAll(drawables);
+        init();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     private void init() {
@@ -66,13 +73,6 @@ public class ObjetCompose extends GameObject implements Drawable, Cloneable {
 
         addComponant(Drawable.class, this);
     }
-
-    public ObjetCompose(String name, Collection<? extends Drawable> drawables) {
-        this.name = name;
-        this.drawables.addAll(drawables);
-        init();
-    }
-
 
     @Override
     public Bounds getBounds() {

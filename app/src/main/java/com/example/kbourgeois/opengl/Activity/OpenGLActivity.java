@@ -1,7 +1,6 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.Activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +17,6 @@ public class OpenGLActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ShaderUtilities.init(this);
         if (!isTaskRoot()) {
             // Android launched another instance of the root activity into an existing task
             //  so just quietly finish and go away, dropping the user back into the activity

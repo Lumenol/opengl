@@ -1,15 +1,15 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.GameObect;
 
 public abstract class MonoBehaviour {
 
     private GameObject gameObject;
 
-    final public GameObject getGameObject() {
-        return gameObject;
-    }
-
     public MonoBehaviour(GameObject gameObject) {
         this.gameObject = gameObject;
+    }
+
+    final public GameObject getGameObject() {
+        return gameObject;
     }
 
     public abstract void start();

@@ -1,9 +1,10 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.Bounds;
 
 import android.opengl.Matrix;
 
 import com.example.kbourgeois.opengl.FloatK.Float3;
 import com.example.kbourgeois.opengl.FloatK.Float4;
+import com.example.kbourgeois.opengl.GameObect.Transform;
 
 import java.util.ArrayList;
 import java.util.Collection;

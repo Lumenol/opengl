@@ -6,11 +6,18 @@ public class Perspective extends Camera {
 
     private boolean needUpdate = true;
 
-    private float fovy=70.0f;
-    private float aspect=9.0f / 16.0f;
-    private float near=.1f, far=100f;
+    private float fovy = 70.0f;
+    private float aspect = 9.0f / 16.0f;
+    private float near = .1f, far = 100f;
 
     public Perspective() {
+    }
+
+    public Perspective(float fovy, float aspect, float near, float far) {
+        this.fovy = fovy;
+        this.aspect = aspect;
+        this.near = near;
+        this.far = far;
     }
 
     private void update() {
@@ -24,13 +31,6 @@ public class Perspective extends Camera {
     public Matrix4f getProjection() {
         update();
         return super.getProjection();
-    }
-
-    public Perspective(float fovy, float aspect, float near, float far) {
-        this.fovy = fovy;
-        this.aspect = aspect;
-        this.near = near;
-        this.far = far;
     }
 
     public float getFovy() {

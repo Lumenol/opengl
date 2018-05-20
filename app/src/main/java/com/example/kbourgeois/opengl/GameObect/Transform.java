@@ -1,4 +1,4 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.GameObect;
 
 import android.renderscript.Matrix4f;
 
@@ -14,6 +14,16 @@ public class Transform extends Observable implements Observer {
     private boolean needUpdate = true;
 
     private Float3 offset = new Float3();
+    private Float4 position = new Float4();
+    private Float4 rotation = new Float4();
+    private Float4 scale = new Float4();
+    private Float4 localPosition = new Float4(0, 0, 0, 1);
+    private Float4 localRotation = new Float4(0, 0, 0, 1);
+    private Float4 localScale = new Float4(1, 1, 1, 1);
+    private Matrix4f localToWorldMatrix = new Matrix4f();
+
+    public Transform() {
+    }
 
     public Float3 getOffset() {
         return new Float3(offset);
@@ -22,19 +32,6 @@ public class Transform extends Observable implements Observer {
     public void setOffset(Float3 offset) {
         this.offset.set(offset);
         needUpdate = true;
-    }
-
-    private Float4 position = new Float4();
-    private Float4 rotation = new Float4();
-    private Float4 scale = new Float4();
-
-    private Float4 localPosition = new Float4(0, 0, 0, 1);
-    private Float4 localRotation = new Float4(0, 0, 0, 1);
-    private Float4 localScale = new Float4(1, 1, 1, 1);
-
-    private Matrix4f localToWorldMatrix = new Matrix4f();
-
-    public Transform() {
     }
 
     public void setChanged() {
@@ -98,7 +95,7 @@ public class Transform extends Observable implements Observer {
             this.localScale.set(scale.getX(), scale.getY(), scale.getZ(), 1);
         } else {
             parent.update();
-            this.localScale.set(scale.getX()/ parent.scale.getX(), scale.getY() / parent.scale.getY(), scale.getZ() / parent.scale.getZ());
+            this.localScale.set(scale.getX() / parent.scale.getX(), scale.getY() / parent.scale.getY(), scale.getZ() / parent.scale.getZ());
         }
         setChanged();
     }

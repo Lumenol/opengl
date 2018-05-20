@@ -1,13 +1,16 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.Behaviour;
 
 import com.example.kbourgeois.opengl.FloatK.Float3;
+import com.example.kbourgeois.opengl.GameObect.GameObject;
+import com.example.kbourgeois.opengl.GameObect.MonoBehaviour;
+import com.example.kbourgeois.opengl.GameObect.Transform;
 
 public class RotationTardis extends MonoBehaviour {
+    private float angleBalancement = 0;
+
     public RotationTardis(GameObject gameObject) {
         super(gameObject);
     }
-
-    private float angleBalancement = 0;
 
     @Override
     public void start() {

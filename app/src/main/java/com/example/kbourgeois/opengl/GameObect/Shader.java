@@ -1,4 +1,4 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.GameObect;
 
 import android.content.Context;
 import android.opengl.GLES20;
@@ -20,14 +20,6 @@ public class Shader {
     public Shader() {
     }
 
-    public int getUniformLocation(String name) {
-        return GLES30.glGetUniformLocation(getProgramID(), name);
-    }
-
-    public int getAttribLocation(String name) {
-        return GLES30.glGetAttribLocation(getProgramID(), name);
-    }
-
     public Shader(final Shader shader) {
         context = shader.context;
         vertexSource = shader.vertexSource;
@@ -35,6 +27,23 @@ public class Shader {
         if (!charger()) {
             throw new RuntimeException("Erreur de chargement.");
         }
+    }
+
+    public Shader(Context context, String vertexSource, String fragmentSource) {
+        this.context = context;
+        this.vertexSource = vertexSource;
+        this.fragmentSource = fragmentSource;
+        if (!charger()) {
+            throw new RuntimeException("Erreur de chargement.");
+        }
+    }
+
+    public int getUniformLocation(String name) {
+        return GLES30.glGetUniformLocation(getProgramID(), name);
+    }
+
+    public int getAttribLocation(String name) {
+        return GLES30.glGetAttribLocation(getProgramID(), name);
     }
 
     private boolean charger() {
@@ -121,15 +130,6 @@ public class Shader {
 
     public int getProgramID() {
         return programID;
-    }
-
-    public Shader(Context context, String vertexSource, String fragmentSource) {
-        this.context = context;
-        this.vertexSource = vertexSource;
-        this.fragmentSource = fragmentSource;
-        if (!charger()) {
-            throw new RuntimeException("Erreur de chargement.");
-        }
     }
 
     @Override

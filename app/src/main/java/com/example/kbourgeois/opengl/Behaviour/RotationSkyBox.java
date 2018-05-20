@@ -1,10 +1,13 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.Behaviour;
 
 import com.example.kbourgeois.opengl.FloatK.Float3;
+import com.example.kbourgeois.opengl.GameObect.GameObject;
+import com.example.kbourgeois.opengl.GameObect.MonoBehaviour;
+import com.example.kbourgeois.opengl.GameObect.Transform;
 
 public class RotationSkyBox extends MonoBehaviour {
 
-    public float vitesse=1800f/60;
+    public float vitesse = 1800f / 60;
 
     public RotationSkyBox(GameObject gameObject) {
         super(gameObject);

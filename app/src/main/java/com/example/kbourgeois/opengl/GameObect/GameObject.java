@@ -1,4 +1,4 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.GameObect;
 
 import android.util.Log;
 

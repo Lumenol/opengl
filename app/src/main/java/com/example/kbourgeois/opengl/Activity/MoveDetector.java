@@ -1,4 +1,4 @@
-package com.example.kbourgeois.opengl;
+package com.example.kbourgeois.opengl.Activity;
 
 import android.view.MotionEvent;
 
@@ -7,13 +7,12 @@ import com.example.kbourgeois.opengl.FloatK.Float2;
 public class MoveDetector {
 
     private Float2 p1, p2;
+    private boolean hasMouvement;
 
     public MoveDetector() {
         p1 = new Float2(0, 0);
         p2 = new Float2(0, 0);
     }
-
-    private boolean hasMouvement;
 
     public boolean hasMouvement() {
         return hasMouvement;
