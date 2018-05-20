@@ -3,12 +3,9 @@ package com.example.kbourgeois.opengl;
 import android.content.Context;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
-import android.renderscript.Matrix4f;
 import android.util.Log;
 
 import com.example.kbourgeois.opengl.Camera.Camera;
-import com.example.kbourgeois.opengl.Camera.Orthographic;
 import com.example.kbourgeois.opengl.Camera.Perspective;
 import com.example.kbourgeois.opengl.FloatK.Float3;
 
@@ -61,7 +58,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Log.d("Camera",camera.getTransform().getRotation().toString());
 
         Shader shader = new Shader(mContext, "vertexshader.vert", "fragmentshader.frag");
-        model = new ObjetCompose(mContext, "TARDIS/TARDIS.obj", shader);
+        model = new ObjetCompose(mContext, "Tardis/tardis.obj", shader);
 
         {
             float scale = 0.5f;
